@@ -31,6 +31,8 @@ public class RevenueServiceImpl implements RevenueService {
 				.type(request.getType())  // Sử dụng enum trực tiếp
 				.amount(request.getAmount())
 				.createdBy(request.getCreatedBy())
+				.dueDate(request.getDueDate())
+				.startDate(request.getStartDate())
 				.build();
 
 		// Lưu đối tượng Revenue vào DB
@@ -44,6 +46,8 @@ public class RevenueServiceImpl implements RevenueService {
 				.amount(savedItem.getAmount())
 				.createdBy(savedItem.getCreatedBy())
 				.createdAt(savedItem.getCreatedAt().toString())
+				.dueDate(request.getDueDate())
+				.startDate(request.getStartDate())
 				.message("Revenue item created successfully")
 				.build();
 	}
@@ -59,6 +63,8 @@ public class RevenueServiceImpl implements RevenueService {
 		item.setDescription(request.getDescription());
 		item.setType(request.getType());  // Sử dụng enum trực tiếp
 		item.setAmount(request.getAmount());
+		item.setDueDate(request.getDueDate());
+		item.setStartDate(request.getStartDate());
 
 		// Lưu cập nhật vào DB
 		Revenue updatedItem = repository.save(item);
@@ -71,6 +77,8 @@ public class RevenueServiceImpl implements RevenueService {
 				.amount(updatedItem.getAmount())
 				.createdBy(updatedItem.getCreatedBy())
 				.createdAt(updatedItem.getCreatedAt().toString())
+				.dueDate(updatedItem.getDueDate())
+				.startDate(updatedItem.getStartDate())
 				.message("Revenue item updated successfully")
 				.build();
 	}
@@ -103,6 +111,8 @@ public class RevenueServiceImpl implements RevenueService {
 						.amount(revenue.getAmount())
 						.createdBy(revenue.getCreatedBy())
 						.createdAt(revenue.getCreatedAt().toString())
+						.dueDate(revenue.getDueDate())
+						.startDate(revenue.getStartDate())
 						.message("Revenue item retrieved successfully")
 						.build())
 				.collect(Collectors.toList());
@@ -120,6 +130,8 @@ public class RevenueServiceImpl implements RevenueService {
 				.amount(item.getAmount())
 				.createdBy(item.getCreatedBy())
 				.createdAt(item.getCreatedAt().toString())
+				.dueDate(item.getDueDate())
+				.startDate(item.getStartDate())
 				.message("Revenue item retrieved successfully")
 				.build();
 	}

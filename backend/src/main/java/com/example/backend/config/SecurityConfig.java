@@ -23,11 +23,17 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-	private final String[] PUBLIC_ENDPOINTS = {"/users",
-			"/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/validate", "/api/v1/send", "/api/v1/auth/forgot-password",
-			"/api/v1/auth/reset-password"
+	private final String[] PUBLIC_ENDPOINTS = {
+			"/users",
+			"/api/v1/auth/register",
+			"/api/v1/auth/login",
+			"/api/v1/auth/validate",
+			"/api/v1/send",
+			"/api/v1/auth/forgot-password",
+			"/api/v1/auth/reset-password",
+			"/graphiql",
+			"/graphql"
 	};
-
 	@Value("${jwt.signerKey}")
 	private String signerKey;
 
@@ -38,6 +44,9 @@ public class SecurityConfig {
 						// Public endpoints (cho phép tất cả mọi người)
 						.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
 
+						.requestMatchers(HttpMethod.GET, "/graphql").permitAll()
+						.requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+
 						// Chỉ admin mới có thể truy cập các endpoint quản trị
 						.requestMatchers("/admin/**").hasRole("ADMIN")
 
@@ -45,6 +54,8 @@ public class SecurityConfig {
 						.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
 
 						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
+						.requestMatchers("/invoice/**").hasAnyRole("ACCOUNTANT", "ADMIN")
+
 						.requestMatchers("/revenue/**").hasAnyRole("ACCOUNTANT", "ADMIN")
 
 						.requestMatchers("/household/**").hasAnyRole("LEADER", "ADMIN", "SUB_LEADER")

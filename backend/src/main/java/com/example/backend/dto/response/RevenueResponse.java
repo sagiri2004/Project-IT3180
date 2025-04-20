@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +19,6 @@ public class RevenueResponse {
 	String createdBy;
 	String createdAt;
 	String message;
+	private LocalDate startDate;
+	private LocalDate dueDate;
 }
