@@ -34,4 +34,16 @@ public class GlobalExceptionHandler {
 						"message", ex.getMessage()
 				));
 	}
+
+	@ExceptionHandler(HouseholdNotFoundException.class)
+	public ResponseEntity<?> handleHouseholdNotFoundException(HouseholdNotFoundException ex) {
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(Map.of(
+						"timestamp", LocalDateTime.now(),
+						"status", HttpStatus.NOT_FOUND.value(),
+						"error", "Revenue Not Found",
+						"message", ex.getMessage()
+				));
+	}
 }

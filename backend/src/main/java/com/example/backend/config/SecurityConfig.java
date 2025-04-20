@@ -47,6 +47,7 @@ public class SecurityConfig {
 						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
 						.requestMatchers("/revenue/**").hasAnyRole("ACCOUNTANT", "ADMIN")
 
+						.requestMatchers("/household/**").hasAnyRole("LEADER", "ADMIN", "SUB_LEADER")
 						// Mọi request khác phải được xác thực
 						.anyRequest().authenticated()
 		);
