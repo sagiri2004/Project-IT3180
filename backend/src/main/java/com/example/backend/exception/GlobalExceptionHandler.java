@@ -46,4 +46,16 @@ public class GlobalExceptionHandler {
 						"message", ex.getMessage()
 				));
 	}
+
+	@ExceptionHandler(InvoiceNotFoundException.class)
+	public ResponseEntity<?> handleInvoiceNotFoundException(InvoiceNotFoundException ex) {
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(Map.of(
+						"timestamp", LocalDateTime.now(),
+						"status", HttpStatus.NOT_FOUND.value(),
+						"error", "Revenue Not Found",
+						"message", ex.getMessage()
+				));	}
+
 }

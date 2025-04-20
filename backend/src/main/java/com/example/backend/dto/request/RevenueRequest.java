@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +19,6 @@ public class RevenueRequest {
 	RevenueType type;
 	BigDecimal amount;
 	String createdBy;
+	private LocalDate startDate;
+	private LocalDate dueDate;
 }

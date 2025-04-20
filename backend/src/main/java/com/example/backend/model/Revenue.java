@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,4 +41,10 @@ public class Revenue {
 	@CreationTimestamp
 	@Column(updatable = false)
 	LocalDateTime createdAt;
+
+	@Column(nullable = false)
+	LocalDate startDate;
+
+	@Column(nullable = false)
+	LocalDate dueDate;
 }

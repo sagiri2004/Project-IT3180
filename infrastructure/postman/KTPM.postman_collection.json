@@ -295,7 +295,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\"\n}\n",
+							"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\",\n  \"startDate\": \"2025-01-01\",\n  \"dueDate\": \"2025-12-31\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -630,6 +630,187 @@
 								"v1",
 								"household",
 								"d60ae887-9612-4653-bb97-5b551e5269f1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "Create invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"householdId\": \"7756b2cb-87d3-4b3e-b53c-40fa725f170f\",\n  \"revenueId\": \"688249b8-a4ba-4fcf-b30b-e044ce357291\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-21\",\n  \"status\": \"PAID\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all invoices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get invoice by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"householdId\": \"4608787c-aee1-4667-8173-ac73e6a8bc26\",\n  \"revenueId\": \"6b04f126-e46e-4b45-a8f9-5bfc8f24a304\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-20\",\n  \"status\": \"PAID\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
 							]
 						}
 					},

@@ -1,0 +1,51 @@
+type Query {
+  queryRevenues(
+    keyword: String,
+    status: InvoiceStatus,
+    fromDate: String,
+    toDate: String
+  ): [Revenue]
+
+  getRevenueStatistics(revenueId: String!): RevenueStats
+}
+
+type Revenue {
+  id: String
+  title: String
+  description: String
+  type: RevenueType
+  amount: Float
+  createdBy: String
+  createdAt: String
+  startDate: String
+  dueDate: String
+}
+
+type Household {
+  id: String
+  address: String
+  area: Float
+  memberCount: Int
+  createdBy: String
+  createdAt: String
+}
+
+type RevenueStats {
+  totalHouseholds: Int
+  paidHouseholds: Int
+  totalAmountCollected: Float
+  unpaidHouseholds: [Household]
+}
+
+enum InvoiceStatus {
+  PAID
+  UNPAID
+  CANCELLED
+}
+
+enum RevenueType {
+  ELECTRICITY
+  WATER
+  GARBAGE
+  MAINTENANCE
+}
