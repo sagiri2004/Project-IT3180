@@ -7,408 +7,816 @@
 	},
 	"item": [
 		{
-			"name": "Register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"john1\",\n  \"password\": \"123456\",\n  \"email\": \"john1@example.com\",\n  \"name\": \"John\",\n  \"roles\": [\"ACCOUNTANT\", \"USER\"]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john12\",\n  \"password\": \"123456\",\n  \"email\": \"john12@example.com\",\n  \"name\": \"John\",\n  \"roles\": [\"LEADER\", \"USER\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"register"
-					]
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register admin",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"acane\",\n  \"password\": \"ztmy\",\n  \"name\": \"Acane\",\n  \"email\": \"acane@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test\",\n  \"email\": \"thang.nh225763@gmail.com\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test\",\n  \"code\": \"a400f0d8\",\n  \"newPassword\": \"test1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/auth/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test1\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Test api",
+			"item": [
+				{
+					"name": "Test role user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huIiwicm9sZXMiOlsiTEVBREVSIiwiVVNFUiJdLCJpYXQiOjE3NDUxNjk0NzcsImV4cCI6MTc0NTIzOTE3NH0.RAKhm-j2GsVcqa93EDEh1ML4YjjW-aHXDzEe5cZzZwQ5bbsRYtvPZ97thdz3UfQUMbPB7pCT8NZJn_75vSaY7A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"login"
-					]
+				{
+					"name": "Test role admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDQxMDk3MTksImV4cCI6MTc0NDE5NjExOX0.O4dPskc_-K_uqlmg6voM1P_Chpn2CG5dgzt_TXJ1PRBpQb9yfwfV2xia5JUwT8E2sXvGusEAR_7I-92vsFcjiw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send mail",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"thang.nh225763@gmail.com\",\n  \"subject\": \"Test Email\",\n  \"text\": \"<h1>Hello from Spring Boot!</h1><p>This is a test email with HTML content.</p>\",\n  \"isHtml\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/send",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"send"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Test role user",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huIiwicm9sZXMiOlsiTEVBREVSIiwiVVNFUiJdLCJpYXQiOjE3NDUxNjk0NzcsImV4cCI6MTc0NTIzOTE3NH0.RAKhm-j2GsVcqa93EDEh1ML4YjjW-aHXDzEe5cZzZwQ5bbsRYtvPZ97thdz3UfQUMbPB7pCT8NZJn_75vSaY7A",
-							"type": "string"
+			"name": "Revenue",
+			"item": [
+				{
+					"name": "Create  revenue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\",\n  \"startDate\": \"2025-01-01\",\n  \"dueDate\": \"2025-12-31\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/revenue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"revenue"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/users",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"users"
-					]
+				{
+					"name": "Put revenue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Revenue from Service\",\n  \"description\": \"Income from consulting services\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 2500.00,\n  \"createdBy\": \"admin\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"c9c33fba-fe00-4f01-9074-ba44a6664b62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get revenue by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/revenue/6b04f126-e46e-4b45-a8f9-5bfc8f24a30422",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"6b04f126-e46e-4b45-a8f9-5bfc8f24a30422"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete revenue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"c9c33fba-fe00-4f01-9074-ba44a6664b62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all revenues",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/revenue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"revenue"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Test role admin",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDQxMDk3MTksImV4cCI6MTc0NDE5NjExOX0.O4dPskc_-K_uqlmg6voM1P_Chpn2CG5dgzt_TXJ1PRBpQb9yfwfV2xia5JUwT8E2sXvGusEAR_7I-92vsFcjiw",
-							"type": "string"
+			"name": "Household",
+			"item": [
+				{
+					"name": "Update household",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"103 Toa B, Khu Pho 4\",\n  \"area\": 60.0,\n  \"memberCount\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"household",
+								"d60ae887-9612-4653-bb97-5b551e5269f1"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/admin",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"admin"
-					]
+				{
+					"name": "Get all households",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/household",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"household"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get household by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"household",
+								"d60ae887-9612-4653-bb97-5b551e5269f1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create household",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"102 Toa A, Khu Pho 3\",\n  \"area\": 50.25,\n  \"memberCount\": 4,\n  \"createdBy\": \"sagiri\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/household",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"household"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete household",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"household",
+								"d60ae887-9612-4653-bb97-5b551e5269f1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Register admin",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"acane\",\n  \"password\": \"ztmy\",\n  \"name\": \"Acane\",\n  \"email\": \"acane@example.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "Create invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"householdId\": \"7756b2cb-87d3-4b3e-b53c-40fa725f170f\",\n  \"revenueId\": \"688249b8-a4ba-4fcf-b30b-e044ce357291\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-21\",\n  \"status\": \"PAID\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"register"
-					]
+				{
+					"name": "Get all invoices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get invoice by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"householdId\": \"4608787c-aee1-4667-8173-ac73e6a8bc26\",\n  \"revenueId\": \"6b04f126-e46e-4b45-a8f9-5bfc8f24a304\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-20\",\n  \"status\": \"PAID\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"invoice",
+								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Send mail",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"to\": \"thang.nh225763@gmail.com\",\n  \"subject\": \"Test Email\",\n  \"text\": \"<h1>Hello from Spring Boot!</h1><p>This is a test email with HTML content.</p>\",\n  \"isHtml\": true\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/send",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"send"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Forgot password",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"email\": \"thang.nh225763@gmail.com\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/forgot-password",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"forgot-password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reset password",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"code\": \"a400f0d8\",\n  \"newPassword\": \"test1\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/auth/reset-password",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"auth",
-						"reset-password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create  revenue",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/revenue",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"revenue"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Put revenue",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"title\": \"Revenue from Service\",\n  \"description\": \"Income from consulting services\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 2500.00,\n  \"createdBy\": \"admin\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"revenue",
-						"c9c33fba-fe00-4f01-9074-ba44a6664b62"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get revenue by id",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/revenue/6b04f126-e46e-4b45-a8f9-5bfc8f24a30422",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"revenue",
-						"6b04f126-e46e-4b45-a8f9-5bfc8f24a30422"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete revenue",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"revenue",
-						"c9c33fba-fe00-4f01-9074-ba44a6664b62"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }

@@ -13,6 +13,12 @@ spring:
     init:
       mode: always
       platform: mysql
+  graphql:
+    graphiql:
+      enabled: true
+    schema:
+      printer:
+        enabled: true
   mail:
     host: smtp.gmail.com
     port: 587
