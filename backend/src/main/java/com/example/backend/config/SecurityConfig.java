@@ -24,7 +24,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 	private final String[] PUBLIC_ENDPOINTS = {"/users",
-			"/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/validate"
+			"/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/validate", "/api/v1/send", "/api/v1/auth/forgot-password",
+			"/api/v1/auth/reset-password"
 	};
 
 	@Value("${jwt.signerKey}")
@@ -42,6 +43,9 @@ public class SecurityConfig {
 
 						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
 						.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+
+						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
+						.requestMatchers("/revenue/**").hasAnyRole("ACCOUNTANT", "ADMIN")
 
 						// Mọi request khác phải được xác thực
 						.anyRequest().authenticated()

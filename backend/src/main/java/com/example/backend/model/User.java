@@ -1,5 +1,7 @@
 package com.example.backend.model;
 
+import com.example.backend.model.enums.UserRole; // Import the enum
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthUser {
+public class User {
 	@Id
 	String id;
 
@@ -26,10 +28,20 @@ public class AuthUser {
 	@Column(nullable = false)
 	String password;
 
+	@Column(nullable = false, unique = true)
+	String email;
+
+	@Column(nullable = false)
+	String name;
+
+	@Column(nullable = true)
+	String resetCode;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+	@Enumerated(EnumType.STRING) // Store as string in the database
 	@Column(name = "role")
-	Set<String> roles;
+	Set<UserRole> roles; // Use UserRole enum here
 
 	@CreationTimestamp
 	@Column(updatable = false)
