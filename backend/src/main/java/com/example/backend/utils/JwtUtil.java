@@ -1,5 +1,6 @@
 package com.example.backend.utils;
 
+import com.example.backend.model.enums.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,39 +25,47 @@ public class JwtUtil {
 		this.secretKey = Keys.hmacShaKeyFor(signerKey.getBytes());
 	}
 
-	public String generateToken(String username, Set<String> roles) {
+	// 🔐 Tạo JWT token chứa username và các roles (enum)
+	public String generateToken(String username, Set<UserRole> roles) {
+		Set<String> roleNames = roles.stream()
+				.map(Enum::name)
+				.collect(Collectors.toSet());
+
 		return Jwts.builder()
 				.setSubject(username)
-				.claim("roles", roles) // Thêm danh sách roles vào JWT
+				.claim("roles", roleNames)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + expirationMs))
 				.signWith(secretKey, SignatureAlgorithm.HS512)
 				.compact();
 	}
 
-	// 🔹 Lấy username từ JWT
+	// 📌 Trích xuất username từ token
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
 
-	public Set<String> extractRoles(String token) {
-		Claims claims = Jwts.parserBuilder()
-				.setSigningKey(secretKey)
-				.build()
-				.parseClaimsJws(token)
-				.getBody();
+	// 📌 Trích xuất danh sách roles (dạng enum) từ token
+	public Set<UserRole> extractRoles(String token) {
+		Claims claims = extractAllClaims(token);
 
-		// Ép kiểu an toàn từ List<Object> sang List<String>
-		List<?> rawList = claims.get("roles", List.class);
-		Set<String> roles = rawList.stream()
+		List<?> rawRoles = claims.get("roles", List.class);
+
+		return rawRoles.stream()
 				.filter(obj -> obj instanceof String)
 				.map(Object::toString)
+				.map(roleStr -> {
+					try {
+						return UserRole.valueOf(roleStr);
+					} catch (IllegalArgumentException e) {
+						return null; // hoặc bỏ qua nếu không hợp lệ
+					}
+				})
+				.filter(role -> role != null)
 				.collect(Collectors.toSet());
-
-		return roles;
 	}
 
-	// 🔹 Kiểm tra token có hợp lệ không
+	// ✅ Kiểm tra token có hợp lệ không
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parserBuilder()
@@ -69,18 +78,28 @@ public class JwtUtil {
 		}
 	}
 
-	// 🔹 Kiểm tra token có hết hạn không
+	// 🔐 Kiểm tra token có hết hạn không
 	private boolean isTokenExpired(String token) {
-		return extractClaim(token, Claims::getExpiration).before(new Date());
+		return extractExpiration(token).before(new Date());
 	}
 
-	// 🔹 Trích xuất claims từ token
+	// 📌 Trích xuất claim cụ thể
 	private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-		Claims claims = Jwts.parserBuilder()
+		final Claims claims = extractAllClaims(token);
+		return claimsResolver.apply(claims);
+	}
+
+	// 📌 Trích xuất tất cả claims
+	private Claims extractAllClaims(String token) {
+		return Jwts.parserBuilder()
 				.setSigningKey(secretKey)
 				.build()
 				.parseClaimsJws(token)
 				.getBody();
-		return claimsResolver.apply(claims);
+	}
+
+	// 📌 Trích xuất thời gian hết hạn
+	private Date extractExpiration(String token) {
+		return extractClaim(token, Claims::getExpiration);
 	}
 }
