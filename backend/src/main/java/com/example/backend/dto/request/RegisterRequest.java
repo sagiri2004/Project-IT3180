@@ -1,5 +1,6 @@
 package com.example.backend.dto.request;
 
+import com.example.backend.model.enums.UserRole;  // Import UserRole enum
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,5 +19,5 @@ public class RegisterRequest {
 	String name;
 
 	@Builder.Default
-	Set<String> roles = new HashSet<>(Set.of("USER"));
+	Set<UserRole> roles = new HashSet<>(Set.of(UserRole.USER));
 }

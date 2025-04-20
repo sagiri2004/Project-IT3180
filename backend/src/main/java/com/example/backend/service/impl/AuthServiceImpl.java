@@ -1,13 +1,13 @@
 package com.example.backend.service.impl;
 
-
 import com.example.backend.dto.request.ForgotPasswordRequest;
 import com.example.backend.dto.request.LoginRequest;
 import com.example.backend.dto.request.RegisterRequest;
 import com.example.backend.dto.request.ResetPasswordRequest;
 import com.example.backend.dto.response.AuthResponse;
 import com.example.backend.exception.AuthException;
-import com.example.backend.model.AuthUser;
+import com.example.backend.model.User;
+import com.example.backend.model.enums.UserRole;
 import com.example.backend.repository.AuthUserRepository;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.EmailService;
@@ -34,29 +34,28 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthException("Username is already taken");
 		}
 
-		// Check email
-		if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+		// Kiểm tra email
+		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
 			throw new AuthException("Email is already taken");
 		}
 
+		// Kiểm tra nếu là user đặc biệt
 		if (request.getUsername().equals("acane")) {
-			request.setRoles(Set.of("ADMIN", "USER"));
-		} else {
-			request.setRoles(Set.of("USER"));
+			request.setRoles(Set.of(UserRole.ADMIN, UserRole.USER));
 		}
 
 		// Mã hóa mật khẩu
 		String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-		// Tạo user mới với roles
-		AuthUser newUser = AuthUser.builder()
+		// Tạo user mới với roles (dùng enum trực tiếp)
+		User newUser = User.builder()
 				.id(UUID.randomUUID().toString())
 				.username(request.getUsername())
 				.password(encodedPassword)
 				.email(request.getEmail())
 				.name(request.getName())
 				.resetCode(null)
-				.roles(request.getRoles()) // Lưu roles vào DB
+				.roles(request.getRoles())
 				.build();
 
 		// Lưu user vào DB
@@ -71,22 +70,17 @@ public class AuthServiceImpl implements AuthService {
 				.message("User registered successfully")
 				.build();
 	}
-
 	@Override
 	public AuthResponse login(LoginRequest request) {
-		// Tìm user theo username
-		AuthUser user = userRepository.findByUsername(request.getUsername())
+		User user = userRepository.findByUsername(request.getUsername())
 				.orElseThrow(() -> new AuthException("Invalid username or password"));
 
-		// Kiểm tra mật khẩu
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new AuthException("Invalid username or password");
 		}
 
-		// Tạo token mới chứa roles
 		String token = jwtUtil.generateToken(user.getUsername(), user.getRoles());
 
-		// Trả về response
 		return AuthResponse.builder()
 				.token(token)
 				.message("User logged in successfully")
@@ -100,28 +94,23 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public AuthResponse forgotPassword(ForgotPasswordRequest request) {
-		// Tìm user theo username
-		AuthUser user = userRepository.findByUsername(request.getUsername())
+		User user = userRepository.findByUsername(request.getUsername())
 				.orElseThrow(() -> new AuthException("Username or email is invalid"));
 
-		// Kiểm tra email có khớp không
 		if (!user.getEmail().equals(request.getEmail())) {
 			throw new AuthException("Username or email is invalid");
 		}
 
-		// Tạo mã reset ngẫu nhiên (hoặc link)
 		String resetCode = UUID.randomUUID().toString().substring(0, 8);
 		user.setResetCode(resetCode);
 		userRepository.save(user);
 
-		// Gửi email
 		String subject = "Reset your password";
 		String body = String.format("Hello %s,\n\nYour reset code is: %s\n\nUse this code to reset your password.",
 				user.getUsername(), resetCode);
 
 		emailService.sendEmail(user.getEmail(), subject, body, false);
 
-		// Trả về response
 		return AuthResponse.builder()
 				.message("Reset code sent to your email")
 				.token(null)
@@ -130,19 +119,16 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public AuthResponse resetPassword(ResetPasswordRequest request) {
-		// Tìm user
-		AuthUser user = userRepository.findByUsername(request.getUsername())
+		User user = userRepository.findByUsername(request.getUsername())
 				.orElseThrow(() -> new AuthException("Invalid username"));
 
-		// Kiểm tra mã code
 		if (user.getResetCode() == null || !user.getResetCode().equals(request.getCode())) {
 			throw new AuthException("Invalid or expired code");
 		}
 
-		// Cập nhật mật khẩu mới
 		String encodedPassword = passwordEncoder.encode(request.getNewPassword());
 		user.setPassword(encodedPassword);
-		user.setResetCode(null); // Xoá mã sau khi sử dụng
+		user.setResetCode(null);
 
 		userRepository.save(user);
 
