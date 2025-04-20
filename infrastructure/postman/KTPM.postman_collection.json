@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\",\n  \"name\": \"John Doe\",\n  \"email\": \"thang.nh225763@gmail.com\"\n}",
+					"raw": "{\n  \"username\": \"john1\",\n  \"password\": \"123456\",\n  \"email\": \"john1@example.com\",\n  \"name\": \"John\",\n  \"roles\": [\"ACCOUNTANT\", \"USER\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,7 +76,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDUxNTM2MTQsImV4cCI6MTc0NTIyMzMxMX0.0q9-cSEaekkt2NROuwj9zYSRGuch5eRc-sXbMe7bvVns6hq5DQBxTT4IJUxPOQw_xt7nEFXXBMnWZlbVsd2P7A",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huIiwicm9sZXMiOlsiTEVBREVSIiwiVVNFUiJdLCJpYXQiOjE3NDUxNjk0NzcsImV4cCI6MTc0NTIzOTE3NH0.RAKhm-j2GsVcqa93EDEh1ML4YjjW-aHXDzEe5cZzZwQ5bbsRYtvPZ97thdz3UfQUMbPB7pCT8NZJn_75vSaY7A",
 							"type": "string"
 						}
 					]
@@ -260,6 +260,151 @@
 						"v1",
 						"auth",
 						"reset-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create  revenue",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/revenue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"revenue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put revenue",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Revenue from Service\",\n  \"description\": \"Income from consulting services\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 2500.00,\n  \"createdBy\": \"admin\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"revenue",
+						"c9c33fba-fe00-4f01-9074-ba44a6664b62"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get revenue by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/revenue/6b04f126-e46e-4b45-a8f9-5bfc8f24a30422",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"revenue",
+						"6b04f126-e46e-4b45-a8f9-5bfc8f24a30422"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete revenue",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"revenue",
+						"c9c33fba-fe00-4f01-9074-ba44a6664b62"
 					]
 				}
 			},
