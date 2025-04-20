@@ -13,6 +13,19 @@ spring:
     init:
       mode: always
       platform: mysql
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: it3180.devmail@gmail.com
+    password: yiuq gvhj bcsg kydv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
 
 jwt:
   signerKey: "In this society, only those who work hard, diligently, and tirelessly will earn their share. Only by working can one eat. Those who expect to eat without working will end up eating sh*t."

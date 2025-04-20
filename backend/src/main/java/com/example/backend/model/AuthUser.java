@@ -26,6 +26,15 @@ public class AuthUser {
 	@Column(nullable = false)
 	String password;
 
+	@Column(nullable = false, unique = true)
+	String email;
+
+	@Column(nullable = false)
+	String name;
+
+	@Column(nullable = true)
+	String resetCode;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
 	@Column(name = "role")

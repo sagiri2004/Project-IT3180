@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "df2056f7-ffa9-4ea8-82bd-3e5073406cf6",
+		"_postman_id": "b847f06e-8df0-4d5e-a096-3194b307a46c",
 		"name": "KTPM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37331212"
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\",\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\"\n}",
+					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\",\n  \"name\": \"John Doe\",\n  \"email\": \"thang.nh225763@gmail.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -44,7 +44,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\"\n}",
+					"raw": "{\n  \"username\": \"test\",\n  \"password\": \"test1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -76,7 +76,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDQxMDk0MDQsImV4cCI6MTc0NDE5NTgwNH0.vEFUzI6MXAOEp-XRNpHLYrAakn4zR3KKdlF0EB-LpAm_D7qejveCBuTpl8DP-wnzFg3FqLbQmPhI54E1kvJ5Yg",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3NDUxNTM2MTQsImV4cCI6MTc0NTIyMzMxMX0.0q9-cSEaekkt2NROuwj9zYSRGuch5eRc-sXbMe7bvVns6hq5DQBxTT4IJUxPOQw_xt7nEFXXBMnWZlbVsd2P7A",
 							"type": "string"
 						}
 					]
@@ -159,6 +159,107 @@
 						"v1",
 						"auth",
 						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send mail",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"to\": \"thang.nh225763@gmail.com\",\n  \"subject\": \"Test Email\",\n  \"text\": \"<h1>Hello from Spring Boot!</h1><p>This is a test email with HTML content.</p>\",\n  \"isHtml\": true\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/send",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot password",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test\",\n  \"email\": \"thang.nh225763@gmail.com\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset password",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"test\",\n  \"code\": \"a400f0d8\",\n  \"newPassword\": \"test1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/reset-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"reset-password"
 					]
 				}
 			},
