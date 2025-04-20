@@ -3,20 +3,13 @@ package com.example.backend.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-import java.util.HashSet;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RegisterRequest {
+public class ResetPasswordRequest {
 	String username;
-	String password;
-	String email;
-	String name;
-
-	@Builder.Default
-	Set<String> roles = new HashSet<>(Set.of("USER"));
+	String code;
+	String newPassword;
 }
