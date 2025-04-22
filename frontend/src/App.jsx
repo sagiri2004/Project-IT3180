@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import { Button } from "@mui/material";
-function App() {
-  const [count, setCount] = useState(0);
+import { useState } from "react";
+import Router from "./router/Router";
+import publicRoutes from "./router/Routes/publicRoutes";
 
-  return (
-    <div>
-      <h1 class="text-3xl font-bold underline">Hello world!</h1>;
-      <Button variant="contained" onClick={() => setCount(count + 1)}>
-        Log in
-      </Button>
-    </div>
-  );
+function App() {
+  const [allRoutes, setAllRoutes] = useState([...publicRoutes]);
+  console.log(allRoutes);
+
+  return <Router allRoutes={allRoutes} />;
 }
 
 export default App;
