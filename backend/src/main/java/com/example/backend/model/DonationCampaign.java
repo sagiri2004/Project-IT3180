@@ -1,50 +1,44 @@
 package com.example.backend.model;
 
-import com.example.backend.model.enums.RevenueType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "revenue")
+@Table(name = "donation_campaigns")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Revenue {
-
+public class DonationCampaign {
 	@Id
-	String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Integer id;
 
 	@Column(nullable = false)
-	String title;
+	String name;
 
-	@Column
+	@Column(nullable = false, length = 1000)
 	String description;
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	RevenueType type;
-
-	@Column(nullable = false)
-	BigDecimal amount;
-
-	@Column
-	String createdBy;
-
-	@CreationTimestamp
-	@Column(updatable = false)
-	LocalDateTime createdAt;
 
 	@Column(nullable = false)
 	LocalDate startDate;
 
-	@Column(nullable = false)
-	LocalDate dueDate;
+	LocalDate endDate;
+
+	Double targetAmount;
+
+	@OneToMany(mappedBy = "donationCampaign", cascade = CascadeType.ALL)
+	List<Donation> donations;
+
+	String createdBy;
+
+	@CreationTimestamp
+	LocalDateTime createdAt;
 }
