@@ -1,51 +1,96 @@
 type Query {
-  queryRevenues(
-    keyword: String,
-    status: InvoiceStatus,
-    fromDate: String,
-    toDate: String
-  ): [Revenue]
+  # Tìm kiếm hộ khẩu
+  searchHouseholds(keyword: String!): [Household]
+  getHouseholdById(id: ID!): Household
+  getHouseholdByCode(code: String!): Household
 
-  getRevenueStatistics(revenueId: String!): RevenueStats
-}
+  # Tra cứu khoản phí và tình trạng đóng
+  getDonationsByHousehold(householdId: ID!): [Donation]
+  getDonationsByCampaign(campaignId: ID!): [Donation]
 
-type Revenue {
-  id: String
-  title: String
-  description: String
-  type: RevenueType
-  amount: Float
-  createdBy: String
-  createdAt: String
-  startDate: String
-  dueDate: String
+  # Thống kê
+  getHouseholdDonationStatsByMonth(month: Int!, year: Int!): HouseholdDonationStats
+  getDonationTotalByMonth(month: Int!, year: Int!): DonationTotalStats
+  getDonationStatsByType(startDate: String!, endDate: String!): [DonationCampaignStats]
 }
 
 type Household {
-  id: String
-  address: String
-  area: Float
-  memberCount: Int
-  createdBy: String
-  createdAt: String
+  id: ID!
+  householdCode: String!
+  apartmentNumber: String!
+  areaM2: Float!
+  address: String!
+  ownerName: String!
+  phoneNumber: String!
+  registrationDate: String!
+  residents: [Resident]
+  donations: [Donation]
+  createdAt: String!
 }
 
-type RevenueStats {
-  totalHouseholds: Int
-  paidHouseholds: Int
-  totalAmountCollected: Float
-  unpaidHouseholds: [Household]
+type Resident {
+  id: ID!
+  householdId: Int!
+  fullName: String!
+  dateOfBirth: String!
+  gender: String!
+  idCardNumber: String!
+  relationshipWithOwner: String!
+  isOwner: Boolean!
+  createdAt: String!
 }
 
-enum InvoiceStatus {
-  PAID
-  UNPAID
-  CANCELLED
+type DonationCampaign {
+  id: ID!
+  name: String!
+  description: String!
+  startDate: String!
+  endDate: String
+  targetAmount: Float
+  donations: [Donation]
+  totalDonated: Float!
+  createdAt: String!
 }
 
-enum RevenueType {
-  ELECTRICITY
-  WATER
-  GARBAGE
-  MAINTENANCE
+type Donation {
+  id: ID!
+  householdId: Int!
+  householdInfo: Household
+  donationCampaignId: Int!
+  campaignInfo: DonationCampaign
+  amount: Float!
+  donationDate: String!
+  createdAt: String!
+}
+
+# Thống kê số hộ đã/chưa đóng phí theo tháng
+type HouseholdDonationStats {
+  month: Int!
+  year: Int!
+  totalHouseholds: Int!
+  paidHouseholds: Int!
+  unpaidHouseholds: Int!
+  paidPercentage: Float!
+}
+
+# Thống kê tổng thu được từng tháng
+type DonationTotalStats {
+  month: Int!
+  year: Int!
+  totalAmount: Float!
+  averageAmount: Float!
+  highestDonation: Float!
+  lowestDonation: Float!
+  donationCount: Int!
+}
+
+# Báo cáo phí theo loại chiến dịch
+type DonationCampaignStats {
+  campaignId: ID!
+  campaignName: String!
+  totalAmount: Float!
+  donationCount: Int!
+  startDate: String!
+  endDate: String
+  percentage: Float!
 }

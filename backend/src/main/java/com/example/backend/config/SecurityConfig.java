@@ -46,6 +46,9 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.GET, "/graphql").permitAll()
 						.requestMatchers(HttpMethod.POST, "/graphql").permitAll()
+						.requestMatchers(HttpMethod.GET, "/graphiql").permitAll()
+						.requestMatchers(HttpMethod.POST, "/graphiql").permitAll()
+
 
 						// Chỉ admin mới có thể truy cập các endpoint quản trị
 						.requestMatchers("/admin/**").hasRole("ADMIN")

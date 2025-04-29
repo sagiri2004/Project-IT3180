@@ -14,15 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class HouseholdResponse {
+public class HistoryRecordResponse {
 	Integer id;
-	String householdCode;
-	String apartmentNumber;
-	Double areaM2;
-	String address;
-	String ownerName;
-	String phoneNumber;
-	LocalDateTime registrationDate;
-	Integer residentCount;
-	LocalDateTime createdAt;
+	String entityType;
+	Integer entityId;
+	String actionType;
+	String changes;
+	String performedBy;
+	LocalDateTime timestamp;
 }

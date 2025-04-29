@@ -1,61 +1,41 @@
 package com.example.backend.exception;
 
-import org.springframework.http.HttpStatus;
+import com.example.backend.dto.response.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(AuthException.class)
-	public ResponseEntity<?> handleAuthException(AuthException ex) {
-		return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(Map.of(
-						"timestamp", LocalDateTime.now(),
-						"status", HttpStatus.BAD_REQUEST.value(),
-						"error", "Authentication Error",
-						"message", ex.getMessage()
-				));
+	@ExceptionHandler(ApiException.class)
+	public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+		return new ResponseEntity<>(errorResponse, ex.getStatus());
 	}
 
-	@ExceptionHandler(RevenueNotFoundException.class)
-	public ResponseEntity<?> handleRevenueNotFoundException(RevenueNotFoundException ex) {
-		return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
-				.body(Map.of(
-						"timestamp", LocalDateTime.now(),
-						"status", HttpStatus.NOT_FOUND.value(),
-						"error", "Revenue Not Found",
-						"message", ex.getMessage()
-				));
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
+		return ResponseEntity.badRequest().body(errors);
 	}
 
-	@ExceptionHandler(HouseholdNotFoundException.class)
-	public ResponseEntity<?> handleHouseholdNotFoundException(HouseholdNotFoundException ex) {
-		return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
-				.body(Map.of(
-						"timestamp", LocalDateTime.now(),
-						"status", HttpStatus.NOT_FOUND.value(),
-						"error", "Revenue Not Found",
-						"message", ex.getMessage()
-				));
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+		log.error("Unhandled exception occurred", ex);
+		ErrorResponse errorResponse = new ErrorResponse("An unexpected error occurred");
+		return ResponseEntity.internalServerError().body(errorResponse);
 	}
-
-	@ExceptionHandler(InvoiceNotFoundException.class)
-	public ResponseEntity<?> handleInvoiceNotFoundException(InvoiceNotFoundException ex) {
-		return ResponseEntity
-				.status(HttpStatus.NOT_FOUND)
-				.body(Map.of(
-						"timestamp", LocalDateTime.now(),
-						"status", HttpStatus.NOT_FOUND.value(),
-						"error", "Revenue Not Found",
-						"message", ex.getMessage()
-				));	}
-
 }
