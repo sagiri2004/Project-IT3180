@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,15 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class HouseholdResponse {
+public class DonationResponse {
 	Integer id;
+	Integer householdId;
 	String householdCode;
 	String apartmentNumber;
-	Double areaM2;
-	String address;
-	String ownerName;
-	String phoneNumber;
-	LocalDateTime registrationDate;
-	Integer residentCount;
+	Integer donationCampaignId;
+	String campaignName;
+	Double amount;
+	LocalDate donationDate;
+	String createdBy;
 	LocalDateTime createdAt;
 }

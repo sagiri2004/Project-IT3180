@@ -1,4 +1,3 @@
-
 package com.example.backend.model;
 
 import jakarta.persistence.*;
@@ -7,46 +6,33 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "households")
+@Table(name = "fee_types")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Household {
+public class FeeType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 
 	@Column(nullable = false, unique = true)
-	String householdCode;
+	String name;
 
 	@Column(nullable = false)
-	String apartmentNumber;
+	String description;
 
 	@Column(nullable = false)
-	Double areaM2;
+	Double pricePerM2;
 
 	@Column(nullable = false)
-	String address;
+	Boolean isPerM2;
 
 	@Column(nullable = false)
-	String ownerName;
-
-	@Column(nullable = false)
-	String phoneNumber;
-
-	@Column(nullable = false)
-	LocalDateTime registrationDate;
-
-	@OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-	List<Resident> residents;
-
-	@OneToMany(mappedBy = "household", cascade = CascadeType.ALL)
-	List<PopulationChange> populationChanges;
+	Boolean isRequired;
 
 	String createdBy;
 
