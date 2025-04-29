@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -165,18 +166,6 @@ public class HouseholdServiceImpl implements HouseholdService {
 		householdRepository.deleteById(id);
 	}
 
-	@Override
-	public List<HouseholdResponse> searchHouseholds(String keyword) {
-		// Implementation will depend on additional repository methods for search
-		// For simplicity, let's assume we have all households and filter in memory
-		return householdRepository.findAll().stream()
-				.filter(h -> h.getHouseholdCode().contains(keyword) ||
-						h.getAddress().contains(keyword) ||
-						h.getOwnerName().contains(keyword))
-				.map(this::mapToHouseholdResponse)
-				.collect(Collectors.toList());
-	}
-
 	private HouseholdResponse mapToHouseholdResponse(Household household) {
 		return HouseholdResponse.builder()
 				.id(household.getId())
@@ -199,4 +188,21 @@ public class HouseholdServiceImpl implements HouseholdService {
 		}
 		return authentication.getName();
 	}
+
+	@Override
+	public List<HouseholdResponse> searchHouseholds(String keyword) {
+		if (keyword == null || keyword.trim().isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		String searchTerm = "%" + keyword.toLowerCase() + "%";
+
+		List<Household> households = householdRepository.findByHouseholdCodeContainingIgnoreCaseOrApartmentNumberContainingIgnoreCaseOrOwnerNameContainingIgnoreCaseOrAddressContainingIgnoreCase(
+				searchTerm, searchTerm, searchTerm, searchTerm);
+
+		return households.stream()
+				.map(this::mapToHouseholdResponse)
+				.collect(Collectors.toList());
+	}
+
 }
