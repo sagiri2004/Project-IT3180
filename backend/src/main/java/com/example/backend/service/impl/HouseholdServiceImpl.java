@@ -2,88 +2,201 @@ package com.example.backend.service.impl;
 
 import com.example.backend.dto.request.HouseholdRequest;
 import com.example.backend.dto.response.HouseholdResponse;
-import com.example.backend.exception.HouseholdNotFoundException;
+import com.example.backend.exception.BadRequestException;
+import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Household;
 import com.example.backend.repository.HouseholdRepository;
+import com.example.backend.service.HistoryRecordService;
 import com.example.backend.service.HouseholdService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HouseholdServiceImpl implements HouseholdService {
 
-	private final HouseholdRepository repository;
+	private final HouseholdRepository householdRepository;
+	private final HistoryRecordService historyRecordService;
+	private final ObjectMapper objectMapper;
 
 	@Override
-	public HouseholdResponse create(HouseholdRequest request) {
+	@Transactional
+	public HouseholdResponse createHousehold(HouseholdRequest request) {
+		String householdCode = request.getHouseholdCode();
+		if (householdCode == null || householdCode.isBlank()) {
+			householdCode = "HH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+		} else if (householdRepository.findByHouseholdCode(householdCode) != null) {
+			throw new BadRequestException("Household code already exists");
+		}
+
 		Household household = Household.builder()
-				.id(UUID.randomUUID().toString())
+				.householdCode(householdCode)
+				.apartmentNumber(request.getApartmentNumber())
+				.areaM2(request.getAreaM2())
 				.address(request.getAddress())
-				.area(request.getArea())
-				.memberCount(request.getMemberCount())
-				.createdBy(request.getCreatedBy())
+				.ownerName(request.getOwnerName())
+				.phoneNumber(request.getPhoneNumber())
+				.registrationDate(LocalDateTime.now())
+				.createdBy(getCurrentUsername())
 				.build();
 
-		Household saved = repository.save(household);
+		household = householdRepository.save(household);
 
-		return buildResponse(saved, "Household created successfully.");
+		// Record history
+		try {
+			String changes = objectMapper.writeValueAsString(request);
+			historyRecordService.recordAction(
+					"Household",
+					household.getId(),
+					"CREATE",
+					changes,
+					getCurrentUsername()
+			);
+		} catch (JsonProcessingException e) {
+			log.error("Error recording history for household creation", e);
+		}
+
+		return mapToHouseholdResponse(household);
 	}
 
 	@Override
-	public HouseholdResponse update(String id, HouseholdRequest request) {
-		Household household = repository.findById(id)
-				.orElseThrow(() -> new HouseholdNotFoundException("Household not found with id: " + id));
+	public HouseholdResponse getHouseholdById(Integer id) {
+		return householdRepository.findById(id)
+				.map(this::mapToHouseholdResponse)
+				.orElseThrow(() -> new ResourceNotFoundException("Household not found with id: " + id));
+	}
 
+	@Override
+	public HouseholdResponse getHouseholdByCode(String householdCode) {
+		Household household = householdRepository.findByHouseholdCode(householdCode);
+		if (household == null) {
+			throw new ResourceNotFoundException("Household not found with code: " + householdCode);
+		}
+		return mapToHouseholdResponse(household);
+	}
+
+	@Override
+	public Page<HouseholdResponse> getAllHouseholds(Pageable pageable) {
+		return householdRepository.findAll(pageable)
+				.map(this::mapToHouseholdResponse);
+	}
+
+	@Override
+	@Transactional
+	public HouseholdResponse updateHousehold(Integer id, HouseholdRequest request) {
+		Household household = householdRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Household not found with id: " + id));
+
+		// Capture old state for history
+		HouseholdResponse oldState = mapToHouseholdResponse(household);
+
+		if (request.getHouseholdCode() != null && !request.getHouseholdCode().equals(household.getHouseholdCode())) {
+			if (householdRepository.findByHouseholdCode(request.getHouseholdCode()) != null) {
+				throw new BadRequestException("Household code already exists");
+			}
+			household.setHouseholdCode(request.getHouseholdCode());
+		}
+
+		household.setApartmentNumber(request.getApartmentNumber());
+		household.setAreaM2(request.getAreaM2());
 		household.setAddress(request.getAddress());
-		household.setArea(request.getArea());
-		household.setMemberCount(request.getMemberCount());
+		household.setOwnerName(request.getOwnerName());
+		household.setPhoneNumber(request.getPhoneNumber());
 
-		Household updated = repository.save(household);
-		return buildResponse(updated, "Household updated successfully.");
+		household = householdRepository.save(household);
+
+		// Record history
+		try {
+			String changes = String.format("Updated from %s to %s",
+					objectMapper.writeValueAsString(oldState),
+					objectMapper.writeValueAsString(request));
+
+			historyRecordService.recordAction(
+					"Household",
+					household.getId(),
+					"UPDATE",
+					changes,
+					getCurrentUsername()
+			);
+		} catch (JsonProcessingException e) {
+			log.error("Error recording history for household update", e);
+		}
+
+		return mapToHouseholdResponse(household);
 	}
 
 	@Override
-	public HouseholdResponse delete(String id) {
-		Household household = repository.findById(id)
-				.orElseThrow(() -> new HouseholdNotFoundException("Household not found with id: " + id));
+	@Transactional
+	public void deleteHousehold(Integer id) {
+		Household household = householdRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Household not found with id: " + id));
 
-		repository.deleteById(id);
-		return HouseholdResponse.builder()
-				.message("Household deleted successfully.")
-				.build();
+		if (household.getResidents() != null && !household.getResidents().isEmpty()) {
+			throw new BadRequestException("Cannot delete household with residents");
+		}
+
+		// Record history before deletion
+		try {
+			historyRecordService.recordAction(
+					"Household",
+					id,
+					"DELETE",
+					"Household deleted: " + household.getHouseholdCode(),
+					getCurrentUsername()
+			);
+		} catch (Exception e) {
+			log.error("Error recording history for household deletion", e);
+		}
+
+		householdRepository.deleteById(id);
 	}
 
 	@Override
-	public HouseholdResponse getById(String id) {
-		Household household = repository.findById(id)
-				.orElseThrow(() -> new HouseholdNotFoundException("Household not found with id: " + id));
-
-		return buildResponse(household, "Household retrieved successfully.");
-	}
-
-	@Override
-	public List<HouseholdResponse> getAll() {
-		return repository.findAll().stream()
-				.map(h -> buildResponse(h, "Household retrieved successfully."))
+	public List<HouseholdResponse> searchHouseholds(String keyword) {
+		// Implementation will depend on additional repository methods for search
+		// For simplicity, let's assume we have all households and filter in memory
+		return householdRepository.findAll().stream()
+				.filter(h -> h.getHouseholdCode().contains(keyword) ||
+						h.getAddress().contains(keyword) ||
+						h.getOwnerName().contains(keyword))
+				.map(this::mapToHouseholdResponse)
 				.collect(Collectors.toList());
 	}
 
-	private HouseholdResponse buildResponse(Household h, String message) {
+	private HouseholdResponse mapToHouseholdResponse(Household household) {
 		return HouseholdResponse.builder()
-				.id(h.getId())
-				.address(h.getAddress())
-				.area(h.getArea())
-				.memberCount(h.getMemberCount())
-				.createdBy(h.getCreatedBy())
-				.createdAt(h.getCreatedAt().toString())
-				.message(message)
+				.id(household.getId())
+				.householdCode(household.getHouseholdCode())
+				.apartmentNumber(household.getApartmentNumber())
+				.areaM2(household.getAreaM2())
+				.address(household.getAddress())
+				.ownerName(household.getOwnerName())
+				.phoneNumber(household.getPhoneNumber())
+				.registrationDate(household.getRegistrationDate())
+				.residentCount(household.getResidents() != null ? household.getResidents().size() : 0)
+				.createdAt(household.getCreatedAt())
 				.build();
+	}
+
+	private String getCurrentUsername() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			return "system";
+		}
+		return authentication.getName();
 	}
 }
