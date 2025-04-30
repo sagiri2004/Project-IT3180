@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"john12\",\n  \"password\": \"123456\",\n  \"email\": \"john12@example.com\",\n  \"name\": \"John\",\n  \"roles\": [\"LEADER\", \"USER\"]\n}",
+							"raw": "{\n  \"username\": \"acane\",\n  \"password\": \"acane\",\n  \"email\": \"acane@example.com\",\n  \"name\": \"acane\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -276,187 +276,6 @@
 			]
 		},
 		{
-			"name": "Revenue",
-			"item": [
-				{
-					"name": "Create  revenue",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Revenue from Sales\",\n  \"description\": \"Income from product sales\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 1500.75,\n  \"createdBy\": \"admin\",\n  \"startDate\": \"2025-01-01\",\n  \"dueDate\": \"2025-12-31\"\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/v1/revenue",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"revenue"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Put revenue",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Revenue from Service\",\n  \"description\": \"Income from consulting services\",\n  \"type\": \"MANDATORY\",\n  \"amount\": 2500.00,\n  \"createdBy\": \"admin\"\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"revenue",
-								"c9c33fba-fe00-4f01-9074-ba44a6664b62"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get revenue by id",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/revenue/6b04f126-e46e-4b45-a8f9-5bfc8f24a30422",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"revenue",
-								"6b04f126-e46e-4b45-a8f9-5bfc8f24a30422"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete revenue",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/revenue/c9c33fba-fe00-4f01-9074-ba44a6664b62",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"revenue",
-								"c9c33fba-fe00-4f01-9074-ba44a6664b62"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get all revenues",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/revenue",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"revenue"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Household",
 			"item": [
 				{
@@ -467,7 +286,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -476,7 +295,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"address\": \"103 Toa B, Khu Pho 4\",\n  \"area\": 60.0,\n  \"memberCount\": 5\n}",
+							"raw": "{\n  \"householdCode\": \"HK001\",\n  \"apartmentNumber\": \"A101\",\n  \"areaM2\": 85.5,\n  \"address\": \"Số 123, Đường ABC, Phường XYZ, Quận 1, TP HCM\",\n  \"ownerName\": \"Nguyễn Văn An\",\n  \"phoneNumber\": \"0912345678\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -484,7 +303,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"raw": "http://localhost:8080/api/v1/households/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -493,8 +312,8 @@
 							"path": [
 								"api",
 								"v1",
-								"household",
-								"d60ae887-9612-4653-bb97-5b551e5269f1"
+								"households",
+								"1"
 							]
 						}
 					},
@@ -508,7 +327,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -516,7 +335,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/household",
+							"raw": "http://localhost:8080/api/v1/households?page=0&size=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -525,7 +344,17 @@
 							"path": [
 								"api",
 								"v1",
-								"household"
+								"households"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								}
 							]
 						}
 					},
@@ -539,7 +368,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -547,7 +376,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"raw": "http://localhost:8080/api/v1/households/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -556,8 +385,8 @@
 							"path": [
 								"api",
 								"v1",
-								"household",
-								"d60ae887-9612-4653-bb97-5b551e5269f1"
+								"households",
+								"1"
 							]
 						}
 					},
@@ -571,7 +400,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMTIiLCJyb2xlcyI6WyJMRUFERVIiLCJVU0VSIl0sImlhdCI6MTc0NTE3Mjk3OCwiZXhwIjoxNzQ1MjQyNjc1fQ.yIMNC_7yz3x036W8vhzcx2S_pO-bq9FZPqTMJ8m1DeiwVxoYHUG4CYfG_7C14wt8NmdncyKy6A-aNPSGdVNw8g",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -580,7 +409,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"address\": \"102 Toa A, Khu Pho 3\",\n  \"area\": 50.25,\n  \"memberCount\": 4,\n  \"createdBy\": \"sagiri\"\n}",
+							"raw": "{\n  \"householdCode\": \"HK002\",\n  \"apartmentNumber\": \"B205\",\n  \"areaM2\": 72.0,\n  \"address\": \"Số 456, Đường DEF, Phường UVW, Quận 2, TP HCM\",\n  \"ownerName\": \"Trần Thị Bình\",\n  \"phoneNumber\": \"0923456789\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -588,7 +417,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/household",
+							"raw": "http://localhost:8080/api/v1/households",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -597,7 +426,7 @@
 							"path": [
 								"api",
 								"v1",
-								"household"
+								"households"
 							]
 						}
 					},
@@ -619,7 +448,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/household/d60ae887-9612-4653-bb97-5b551e5269f1",
+							"raw": "http://localhost:8080/api/v1/households/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -628,8 +457,8 @@
 							"path": [
 								"api",
 								"v1",
-								"household",
-								"d60ae887-9612-4653-bb97-5b551e5269f1"
+								"households",
+								"1"
 							]
 						}
 					},
@@ -638,17 +467,17 @@
 			]
 		},
 		{
-			"name": "Invoice",
+			"name": "Resident",
 			"item": [
 				{
-					"name": "Create invoice",
+					"name": "Create resident",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -657,7 +486,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"householdId\": \"7756b2cb-87d3-4b3e-b53c-40fa725f170f\",\n  \"revenueId\": \"688249b8-a4ba-4fcf-b30b-e044ce357291\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-21\",\n  \"status\": \"PAID\"\n}\n",
+							"raw": "{\n  \"fullName\": \"Trần Thị Bình\",\n  \"dateOfBirth\": \"1975-09-12\",\n  \"gender\": \"FEMALE\",\n  \"idCardNumber\": \"023456789012\",\n  \"phoneNumber\": \"0923456789\",\n  \"email\": \"binh.tran@example.com\",\n  \"permanentAddress\": \"Số 25, Phố Lê Lợi, Quận Hoàn Kiếm, Hà Nội\",\n  \"householdId\": 2,\n  \"relationshipWithOwner\": \"OWNER\",\n  \"occupation\": \"Bác sĩ\",\n  \"workplace\": \"Bệnh viện XYZ\",\n  \"isOwner\": true\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -665,7 +494,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/invoice",
+							"raw": "http://localhost:8080/api/v1/residents",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -674,84 +503,21 @@
 							"path": [
 								"api",
 								"v1",
-								"invoice"
+								"residents"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get all invoices",
+					"name": "Sua",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/invoice",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"invoice"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get invoice by Id",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"invoice",
-								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Put invoice",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
@@ -760,7 +526,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"householdId\": \"4608787c-aee1-4667-8173-ac73e6a8bc26\",\n  \"revenueId\": \"6b04f126-e46e-4b45-a8f9-5bfc8f24a304\",\n  \"amount\": 500000,\n  \"paymentDate\": \"2025-04-20\",\n  \"status\": \"PAID\"\n}\n",
+							"raw": "{\n  \"fullName\": \"Trần Thị Bình\",\n  \"dateOfBirth\": \"1977-09-12\",\n  \"gender\": \"FEMALE\",\n  \"idCardNumber\": \"023456789012\",\n  \"phoneNumber\": \"0923456789\",\n  \"email\": \"binh.tran@example.com\",\n  \"permanentAddress\": \"Số 25, Phố Lê Lợi, Quận Hoàn Kiếm, Hà Nội\",\n  \"householdId\": 2,\n  \"relationshipWithOwner\": \"OWNER\",\n  \"occupation\": \"Bác sĩ\",\n  \"workplace\": \"Bệnh viện XYZ\",\n  \"isOwner\": true\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -768,7 +534,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"raw": "http://localhost:8080/api/v1/residents/4",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -777,30 +543,44 @@
 							"path": [
 								"api",
 								"v1",
-								"invoice",
-								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+								"residents",
+								"4"
 							]
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Population change",
+			"item": [
 				{
-					"name": "Delete invoice",
+					"name": "Vắng tạm thời",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huMSIsInJvbGVzIjpbIkFDQ09VTlRBTlQiLCJVU0VSIl0sImlhdCI6MTc0NTE3MDI4NSwiZXhwIjoxNzQ1MjM5OTgyfQ.ys6ff5XvQW8MqnvApqmigjYTFFQaRNmdipKUEuHqyvug8zKVWXbg3yHhX9URW9mHhv_-mdm0Yt6NlXzSZH_8Cw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
 									"type": "string"
 								}
 							]
 						},
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"residentId\": 1,\n  \"householdId\": 1,\n  \"changeType\": \"TEMPORARY_ABSENCE\",\n  \"reason\": \"Đi công tác nước ngoài\",\n  \"destinationAddress\": \"Tokyo, Nhật Bản\",\n  \"startDate\": \"2023-05-01\",\n  \"endDate\": \"2023-08-01\",\n  \"status\": \"PENDING\",\n  \"notes\": \"Công tác 3 tháng tại chi nhánh công ty ở Tokyo\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/invoice/6145b1b1-b98a-46d5-bb14-b44f4d674c90",
+							"raw": "http://localhost:8080/api/v1/population-changes",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -809,8 +589,310 @@
 							"path": [
 								"api",
 								"v1",
-								"invoice",
-								"6145b1b1-b98a-46d5-bb14-b44f4d674c90"
+								"population-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cư trú tạm thời",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"residentId\": 2,\n  \"householdId\": 1,\n  \"changeType\": \"TEMPORARY_RESIDENCE\",\n  \"reason\": \"Thăm gia đình\",\n  \"sourceAddress\": \"Hà Nội\",\n  \"startDate\": \"2023-06-15\",\n  \"endDate\": \"2023-07-15\",\n  \"status\": \"PENDING\",\n  \"notes\": \"Về thăm gia đình trong dịp hè\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chuyển đến",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"residentId\": 3,\n  \"householdId\": 2,\n  \"changeType\": \"MOVE_IN\",\n  \"reason\": \"Chuyển đến sinh sống\",\n  \"sourceAddress\": \"Quận 7, TP HCM\",\n  \"startDate\": \"2023-04-10\",\n  \"status\": \"PENDING\",\n  \"notes\": \"Chuyển từ nhà thuê ở Quận 7 đến căn hộ mới mua\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chuyển đi",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"residentId\": 2,\n  \"householdId\": 1,\n  \"changeType\": \"MOVE_OUT\",\n  \"reason\": \"Chuyển công tác\",\n  \"destinationAddress\": \"Đà Nẵng\",\n  \"startDate\": \"2023-09-01\",\n  \"status\": \"PENDING\",\n  \"notes\": \"Chuyển công tác đến chi nhánh công ty ở Đà Nẵng\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sửa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Đi công tác nước ngoài - Gia hạn\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "approve",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes/1/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes",
+								"1",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reject",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/population-changes/1/reject",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"population-changes",
+								"1",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Donation Campaigns",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhY2FuZSIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NDU5NTM2MDMsImV4cCI6MTc0NjAyMzMwMH0.atxK0wi9GnIPOAASc9Rc1d2Mx_rnuqYTaKQVg2GbXxFqCRtXGibUAJXC_mf2l4_ziiFOyfIBcHRKxuglYiJ8TQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Quyên góp hỗ trợ đồng bào miền Trung\",\n  \"description\": \"Chiến dịch quyên góp nhằm hỗ trợ đồng bào miền Trung bị ảnh hưởng bởi lũ lụt. Mọi sự đóng góp đều có ý nghĩa và sẽ được chuyển trực tiếp đến các gia đình chịu thiệt hại nặng nề.\",\n  \"startDate\": \"2023-10-15\",\n  \"endDate\": \"2023-11-30\",\n  \"targetAmount\": 100000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/donation-campaigns",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"donation-campaigns"
 							]
 						}
 					},

@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: sagiri2k4/backend_ktpm:latest
+    networks:
+      - microservice-networks
+networks:
+  microservice-networks:
+    driver: bridge
