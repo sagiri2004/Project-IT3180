@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "auth_users")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
