@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +26,10 @@ public class HouseholdResponse {
 	LocalDateTime registrationDate;
 	Integer residentCount;
 	LocalDateTime createdAt;
+	
+	// Additional fields for detailed information
+	List<ResidentResponse> members;
+	List<DonationResponse> donations;
+	List<FeeCollectionResponse> feeCollections;
+	List<PopulationChangeResponse> populationChanges;
 }

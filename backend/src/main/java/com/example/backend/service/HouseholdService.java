@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.request.HouseholdRequest;
-import com.example.backend.dto.response.HouseholdResponse;
+import com.example.backend.dto.response.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
