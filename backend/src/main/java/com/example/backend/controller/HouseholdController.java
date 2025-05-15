@@ -35,7 +35,6 @@ public class HouseholdController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<ApiResponse<HouseholdResponse>> getHouseholdById(@PathVariable Integer id) {
 		log.info("Fetching household with id: {}", id);
 		HouseholdResponse response = householdService.getHouseholdById(id);
@@ -52,8 +51,19 @@ public class HouseholdController {
 
 	@GetMapping
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public ResponseEntity<ApiResponse<Page<HouseholdResponse>>> getAllHouseholds(Pageable pageable) {
-		log.info("Fetching all households with pagination: {}", pageable);
+	public ResponseEntity<ApiResponse<Page<HouseholdResponse>>> getAllHouseholds(
+			Pageable pageable,
+			@RequestParam(value = "keyword", required = false) String keyword) {
+		log.info("Fetching all households with pagination: {} and keyword: {}", pageable, keyword);
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			List<HouseholdResponse> searchResults = householdService.searchHouseholds(keyword);
+			// Tạo Page thủ công từ List
+			int start = (int) pageable.getOffset();
+			int end = Math.min((start + pageable.getPageSize()), searchResults.size());
+			List<HouseholdResponse> pageContent = searchResults.subList(start, end);
+			Page<HouseholdResponse> page = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, searchResults.size());
+			return ResponseEntity.ok(new ApiResponse<>(true, "Households retrieved successfully", page));
+		}
 		Page<HouseholdResponse> response = householdService.getAllHouseholds(pageable);
 		return ResponseEntity.ok(new ApiResponse<>(true, "Households retrieved successfully", response));
 	}

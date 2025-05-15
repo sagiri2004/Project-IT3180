@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +24,9 @@ public class DonationResponse {
 	Integer donationCampaignId;
 	String campaignName;
 	Double amount;
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	LocalDate donationDate;
 	String createdBy;
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	LocalDateTime createdAt;
 }

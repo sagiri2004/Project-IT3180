@@ -1,11 +1,18 @@
 package com.example.backend.service.impl;
 
 import com.example.backend.dto.request.HouseholdRequest;
-import com.example.backend.dto.response.HouseholdResponse;
+import com.example.backend.dto.response.*;
 import com.example.backend.exception.BadRequestException;
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.Household;
+import com.example.backend.model.*;
+import com.example.backend.model.enums.ChangeType;
+import com.example.backend.model.enums.Gender;
+import com.example.backend.model.enums.RelationshipType;
 import com.example.backend.repository.HouseholdRepository;
+import com.example.backend.repository.ResidentRepository;
+import com.example.backend.repository.DonationRepository;
+import com.example.backend.repository.FeeCollectionRepository;
+import com.example.backend.repository.PopulationChangeRepository;
 import com.example.backend.service.HistoryRecordService;
 import com.example.backend.service.HouseholdService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +38,10 @@ import java.util.stream.Collectors;
 public class HouseholdServiceImpl implements HouseholdService {
 
 	private final HouseholdRepository householdRepository;
+	private final ResidentRepository residentRepository;
+	private final DonationRepository donationRepository;
+	private final FeeCollectionRepository feeCollectionRepository;
+	private final PopulationChangeRepository populationChangeRepository;
 	private final HistoryRecordService historyRecordService;
 	private final ObjectMapper objectMapper;
 
@@ -167,6 +178,30 @@ public class HouseholdServiceImpl implements HouseholdService {
 	}
 
 	private HouseholdResponse mapToHouseholdResponse(Household household) {
+		// Fetch related data
+		List<Resident> residents = household.getResidents() != null ? household.getResidents() : residentRepository.findByHouseholdId(household.getId());
+		List<Donation> donations = donationRepository.findByHouseholdId(household.getId());
+		List<FeeCollection> feeCollections = feeCollectionRepository.findByHouseholdId(household.getId());
+		List<PopulationChange> populationChanges = populationChangeRepository.findByHouseholdId(household.getId());
+
+		// Map to response DTOs
+		List<ResidentResponse> residentResponses = residents.stream()
+				.map(this::mapToResidentResponse)
+				.collect(Collectors.toList());
+
+		List<DonationResponse> donationResponses = donations.stream()
+				.map(this::mapToDonationResponse)
+				.collect(Collectors.toList());
+
+		List<FeeCollectionResponse> feeCollectionResponses = feeCollections.stream()
+				.map(this::mapToFeeCollectionResponse)
+				.collect(Collectors.toList());
+
+		List<PopulationChangeResponse> populationChangeResponses = populationChanges.stream()
+				.map(this::mapToPopulationChangeResponse)
+				.collect(Collectors.toList());
+
+		// Build HouseholdResponse
 		return HouseholdResponse.builder()
 				.id(household.getId())
 				.householdCode(household.getHouseholdCode())
@@ -176,8 +211,79 @@ public class HouseholdServiceImpl implements HouseholdService {
 				.ownerName(household.getOwnerName())
 				.phoneNumber(household.getPhoneNumber())
 				.registrationDate(household.getRegistrationDate())
-				.residentCount(household.getResidents() != null ? household.getResidents().size() : 0)
+				.residentCount(residents.size())
 				.createdAt(household.getCreatedAt())
+				.members(residentResponses)
+				.donations(donationResponses)
+				.feeCollections(feeCollectionResponses)
+				.populationChanges(populationChangeResponses)
+				.build();
+	}
+
+	private ResidentResponse mapToResidentResponse(Resident resident) {
+		return ResidentResponse.builder()
+				.id(resident.getId())
+				.householdId(resident.getHousehold().getId())
+				.householdCode(resident.getHousehold().getHouseholdCode())
+				.fullName(resident.getFullName())
+				.dateOfBirth(resident.getDateOfBirth())
+				.gender(resident.getGender())
+				.idCardNumber(resident.getIdCardNumber())
+				.relationshipWithOwner(resident.getRelationshipWithOwner())
+				.isOwner(resident.getIsOwner())
+				.createdAt(resident.getCreatedAt())
+				.build();
+	}
+
+	private DonationResponse mapToDonationResponse(Donation donation) {
+		return DonationResponse.builder()
+				.id(donation.getId())
+				.householdId(donation.getHousehold().getId())
+				.householdCode(donation.getHousehold().getHouseholdCode())
+				.apartmentNumber(donation.getHousehold().getApartmentNumber())
+				.donationCampaignId(donation.getDonationCampaign().getId())
+				.campaignName(donation.getDonationCampaign().getName())
+				.amount(donation.getAmount())
+				.donationDate(donation.getDonationDate())
+				.createdBy(donation.getCreatedBy())
+				.createdAt(donation.getCreatedAt())
+				.build();
+	}
+
+	private FeeCollectionResponse mapToFeeCollectionResponse(FeeCollection feeCollection) {
+		return FeeCollectionResponse.builder()
+				.id(feeCollection.getId())
+				.householdId(feeCollection.getHousehold().getId())
+				.householdCode(feeCollection.getHousehold().getHouseholdCode())
+				.apartmentNumber(feeCollection.getHousehold().getApartmentNumber())
+				.feeTypeId(feeCollection.getFeeType().getId())
+				.feeTypeName(feeCollection.getFeeType().getName())
+				.yearMonth(feeCollection.getYearMonth())
+				.amount(feeCollection.getAmount())
+				.isPaid(feeCollection.getIsPaid())
+				.paidDate(feeCollection.getPaidDate())
+				.paidBy(feeCollection.getPaidBy())
+				.collectedBy(feeCollection.getCollectedBy())
+				.createdBy(feeCollection.getCreatedBy())
+				.createdAt(feeCollection.getCreatedAt())
+				.build();
+	}
+
+	private PopulationChangeResponse mapToPopulationChangeResponse(PopulationChange populationChange) {
+		return PopulationChangeResponse.builder()
+				.id(populationChange.getId())
+				.residentId(populationChange.getResident().getId())
+				.residentName(populationChange.getResident().getFullName())
+				.householdId(populationChange.getHousehold().getId())
+				.householdCode(populationChange.getHousehold().getHouseholdCode())
+				.changeType(populationChange.getChangeType())
+				.startDate(populationChange.getStartDate())
+				.endDate(populationChange.getEndDate())
+				.reason(populationChange.getReason())
+				.destinationAddress(populationChange.getDestinationAddress())
+				.sourceAddress(populationChange.getSourceAddress())
+				.isApproved(populationChange.getIsApproved())
+				.createdAt(populationChange.getCreatedAt())
 				.build();
 	}
 
@@ -195,14 +301,10 @@ public class HouseholdServiceImpl implements HouseholdService {
 			return new ArrayList<>();
 		}
 
-		String searchTerm = "%" + keyword.toLowerCase() + "%";
-
-		List<Household> households = householdRepository.findByHouseholdCodeContainingIgnoreCaseOrApartmentNumberContainingIgnoreCaseOrOwnerNameContainingIgnoreCaseOrAddressContainingIgnoreCase(
-				searchTerm, searchTerm, searchTerm, searchTerm);
+		List<Household> households = householdRepository.searchHouseholds(keyword.trim());
 
 		return households.stream()
 				.map(this::mapToHouseholdResponse)
 				.collect(Collectors.toList());
 	}
-
 }

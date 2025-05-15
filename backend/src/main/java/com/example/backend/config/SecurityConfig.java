@@ -1,87 +1,63 @@
 package com.example.backend.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-	private final String[] PUBLIC_ENDPOINTS = {
-			"/users",
-			"/api/v1/auth/register",
-			"/api/v1/auth/login",
-			"/api/v1/auth/validate",
-			"/api/v1/send",
-			"/api/v1/auth/forgot-password",
-			"/api/v1/auth/reset-password",
-			"/graphiql",
-			"/graphql"
-	};
-	@Value("${jwt.signerKey}")
-	private String signerKey;
+
+	private final JwtAuthenticationFilter jwtAuthFilter;
+	private final UserDetailsService userDetailsService;
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeHttpRequests(request ->
-				request
-						// Public endpoints (cho phép tất cả mọi người)
-						.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+			.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/api/v1/auth/**").permitAll()
+				.anyRequest().authenticated()
+			)
+			.sessionManagement(session -> session
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			)
+			.authenticationProvider(authenticationProvider())
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-						.requestMatchers(HttpMethod.GET, "/graphql").permitAll()
-						.requestMatchers(HttpMethod.POST, "/graphql").permitAll()
-						.requestMatchers(HttpMethod.GET, "/graphiql").permitAll()
-						.requestMatchers(HttpMethod.POST, "/graphiql").permitAll()
-
-
-						// Chỉ admin mới có thể truy cập các endpoint quản trị
-						.requestMatchers("/admin/**").hasRole("ADMIN")
-
-						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
-						.requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-
-						// Chỉ user đã đăng nhập mới có thể truy cập endpoint này
-						.requestMatchers("/invoice/**").hasAnyRole("ACCOUNTANT", "ADMIN")
-
-						.requestMatchers("/revenue/**").hasAnyRole("ACCOUNTANT", "ADMIN")
-
-						.requestMatchers("/household/**").hasAnyRole("LEADER", "ADMIN", "SUB_LEADER")
-						// Mọi request khác phải được xác thực
-						.anyRequest().authenticated()
-		);
-
-		httpSecurity.oauth2ResourceServer(oauth2 ->
-				oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
-		);
-
-		httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
-		return httpSecurity.build();
+		return http.build();
 	}
 
 	@Bean
-	JwtDecoder jwtDecoder(){
-		SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-		return NimbusJwtDecoder
-				.withSecretKey(secretKeySpec)
-				.macAlgorithm(MacAlgorithm.HS512)
-				.build();
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
 	}
 
 	@Bean
@@ -90,14 +66,17 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Prefix cho vai trò
-		grantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); // Đọc từ claim "roles"
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+		configuration.setExposedHeaders(Arrays.asList("Authorization"));
+		configuration.setAllowCredentials(true);
+		configuration.setMaxAge(3600L);
 
-		JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
-		authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-
-		return authenticationConverter;
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }
