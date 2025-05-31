@@ -22,7 +22,7 @@ public class HistoryRecordController {
 	private final HistoryRecordService historyRecordService;
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<HistoryRecordResponse>> getHistoryRecordById(@PathVariable Integer id) {
 		log.info("Fetching history record with id: {}", id);
 		HistoryRecordResponse response = historyRecordService.getHistoryRecordById(id);
@@ -30,7 +30,7 @@ public class HistoryRecordController {
 	}
 
 	@GetMapping("/entity/{entityType}/{entityId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<HistoryRecordResponse>>> getHistoryByEntityAndId(
 			@PathVariable String entityType, @PathVariable Integer entityId) {
 		log.info("Fetching history records for entity type: {} and id: {}", entityType, entityId);
@@ -39,7 +39,7 @@ public class HistoryRecordController {
 	}
 
 	@GetMapping("/user/{username}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<HistoryRecordResponse>>> getHistoryByUser(
 			@PathVariable String username) {
 		log.info("Fetching history records for user: {}", username);
@@ -48,7 +48,7 @@ public class HistoryRecordController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<Page<HistoryRecordResponse>>> getAllHistoryRecords(Pageable pageable) {
 		log.info("Fetching all history records with pagination: {}", pageable);
 		Page<HistoryRecordResponse> response = historyRecordService.getAllHistoryRecords(pageable);
@@ -56,7 +56,7 @@ public class HistoryRecordController {
 	}
 
 	@GetMapping("/entity-type/{entityType}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<HistoryRecordResponse>>> getHistoryByEntityType(
 			@PathVariable String entityType) {
 		log.info("Fetching history records for entity type: {}", entityType);
@@ -65,7 +65,7 @@ public class HistoryRecordController {
 	}
 
 	@GetMapping("/action-type/{actionType}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<HistoryRecordResponse>>> getHistoryByActionType(
 			@PathVariable String actionType) {
 		log.info("Fetching history records for action type: {}", actionType);

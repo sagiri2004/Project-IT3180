@@ -25,7 +25,7 @@ public class HouseholdController {
 	private final HouseholdService householdService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<HouseholdResponse>> createHousehold(
 			@Valid @RequestBody HouseholdRequest request) {
 		log.info("Creating new household with code: {}", request.getHouseholdCode());
@@ -35,6 +35,7 @@ public class HouseholdController {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyRole('LEADER', 'SUB_LEADER', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<HouseholdResponse>> getHouseholdById(@PathVariable Integer id) {
 		log.info("Fetching household with id: {}", id);
 		HouseholdResponse response = householdService.getHouseholdById(id);
@@ -42,7 +43,7 @@ public class HouseholdController {
 	}
 
 	@GetMapping("/code/{code}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('LEADER', 'SUB_LEADER', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<HouseholdResponse>> getHouseholdByCode(@PathVariable String code) {
 		log.info("Fetching household with code: {}", code);
 		HouseholdResponse response = householdService.getHouseholdByCode(code);

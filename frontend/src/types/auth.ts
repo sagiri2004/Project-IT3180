@@ -11,7 +11,7 @@ export interface User {
     username: string;
     email: string;
     name: string;
-    role: string;
+    roles: UserRole[];
     enabled: boolean;
     createdAt: string;
     updatedAt: string;

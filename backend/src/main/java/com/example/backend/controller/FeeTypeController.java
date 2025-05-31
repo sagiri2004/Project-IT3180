@@ -25,7 +25,7 @@ public class FeeTypeController {
 	private final FeeTypeService feeTypeService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<FeeTypeResponse>> createFeeType(
 			@Valid @RequestBody FeeTypeRequest request) {
 		log.info("Creating new fee type: {}", request.getName());
@@ -35,7 +35,7 @@ public class FeeTypeController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('LEADER', 'SUB_LEADER', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<FeeTypeResponse>> getFeeTypeById(@PathVariable Integer id) {
 		log.info("Fetching fee type with id: {}", id);
 		FeeTypeResponse response = feeTypeService.getFeeTypeById(id);

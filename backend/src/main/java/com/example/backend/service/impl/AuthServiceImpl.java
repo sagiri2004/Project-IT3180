@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -78,6 +79,10 @@ public class AuthServiceImpl implements AuthService {
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new AuthException("Invalid username or password");
 		}
+
+		// Update last login time
+		user.setLastLoginAt(LocalDateTime.now());
+		userRepository.save(user);
 
 		String token = jwtUtil.generateToken(user.getUsername(), user.getRoles());
 

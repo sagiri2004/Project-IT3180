@@ -17,6 +17,7 @@ import FeeCollectionDetailPage from './pages/FeeCollectionDetailPage';
 import FeeTypeDetailPage from './pages/FeeTypeDetailPage';
 import PopulationChangePage from './pages/PopulationChangePage';
 import HouseholdDetailPage from './pages/HouseholdDetailPage';
+import UserManagementPage from './pages/UserManagementPage';
 import theme, { getDesignTokens } from './theme';
 
 const App: React.FC = () => {
@@ -66,6 +67,7 @@ const App: React.FC = () => {
               <Route path="fee-types/:id" element={<FeeTypeDetailPage />} />
               <Route path="population-changes" element={<PopulationChangePage />} />
               <Route path="households/:id" element={<HouseholdDetailPage />} />
+              <Route path="users" element={<UserManagementPage />} />
             </Route>
 
             {/* Catch all route */}

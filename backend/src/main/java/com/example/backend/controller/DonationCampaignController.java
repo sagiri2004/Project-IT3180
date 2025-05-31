@@ -25,7 +25,7 @@ public class DonationCampaignController {
 	private final DonationCampaignService donationCampaignService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationCampaignResponse>> createDonationCampaign(
 			@Valid @RequestBody DonationCampaignRequest request) {
 		log.info("Creating new donation campaign: {}", request.getName());
@@ -35,7 +35,7 @@ public class DonationCampaignController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationCampaignResponse>> getDonationCampaignById(@PathVariable Integer id) {
 		log.info("Fetching donation campaign with id: {}", id);
 		DonationCampaignResponse response = donationCampaignService.getDonationCampaignById(id);
@@ -43,7 +43,7 @@ public class DonationCampaignController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<Page<DonationCampaignResponse>>> getAllDonationCampaigns(Pageable pageable) {
 		log.info("Fetching all donation campaigns with pagination: {}", pageable);
 		Page<DonationCampaignResponse> response = donationCampaignService.getAllDonationCampaigns(pageable);
@@ -51,7 +51,7 @@ public class DonationCampaignController {
 	}
 
 	@GetMapping("/active")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<List<DonationCampaignResponse>>> getActiveDonationCampaigns() {
 		log.info("Fetching active donation campaigns");
 		List<DonationCampaignResponse> response = donationCampaignService.getActiveDonationCampaigns();
@@ -59,7 +59,7 @@ public class DonationCampaignController {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationCampaignResponse>> updateDonationCampaign(
 			@PathVariable Integer id, @Valid @RequestBody DonationCampaignRequest request) {
 		log.info("Updating donation campaign with id: {}", id);
@@ -68,7 +68,7 @@ public class DonationCampaignController {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<Void>> deleteDonationCampaign(@PathVariable Integer id) {
 		log.info("Deleting donation campaign with id: {}", id);
 		donationCampaignService.deleteDonationCampaign(id);

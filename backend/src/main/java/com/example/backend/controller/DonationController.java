@@ -25,7 +25,7 @@ public class DonationController {
 	private final DonationService donationService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationResponse>> createDonation(
 			@Valid @RequestBody DonationRequest request) {
 		log.info("Creating new donation for household ID: {} and campaign ID: {}",
@@ -36,7 +36,7 @@ public class DonationController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationResponse>> getDonationById(@PathVariable Integer id) {
 		log.info("Fetching donation with id: {}", id);
 		DonationResponse response = donationService.getDonationById(id);
@@ -44,7 +44,7 @@ public class DonationController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<Page<DonationResponse>>> getAllDonations(Pageable pageable) {
 		log.info("Fetching all donations with pagination: {}", pageable);
 		Page<DonationResponse> response = donationService.getAllDonations(pageable);
@@ -52,7 +52,7 @@ public class DonationController {
 	}
 
 	@GetMapping("/household/{householdId}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<List<DonationResponse>>> getDonationsByHousehold(
 			@PathVariable Integer householdId) {
 		log.info("Fetching donations for household id: {}", householdId);
@@ -61,7 +61,7 @@ public class DonationController {
 	}
 
 	@GetMapping("/campaign/{campaignId}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<List<DonationResponse>>> getDonationsByCampaign(
 			@PathVariable Integer campaignId) {
 		log.info("Fetching donations for campaign id: {}", campaignId);
@@ -70,7 +70,7 @@ public class DonationController {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<DonationResponse>> updateDonation(
 			@PathVariable Integer id, @Valid @RequestBody DonationRequest request) {
 		log.info("Updating donation with id: {}", id);
@@ -79,7 +79,7 @@ public class DonationController {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'ACCOUNTANT')")
 	public ResponseEntity<ApiResponse<Void>> deleteDonation(@PathVariable Integer id) {
 		log.info("Deleting donation with id: {}", id);
 		donationService.deleteDonation(id);

@@ -98,6 +98,7 @@ const Layout: React.FC<{ toggleTheme?: () => void; mode?: 'light' | 'dark' }> = 
         { text: 'Đóng góp', icon: MoneyIcon, path: '/donations' },
         { text: 'Chiến dịch', icon: CampaignIcon, path: '/donation-campaigns' },
         { text: 'Thu phí', icon: PaymentIcon, path: '/fees' },
+        { text: 'Người dùng', icon: PeopleIcon, path: '/users' },
         { text: 'Lịch sử', icon: HistoryIcon, path: '/history' }
     ];
 

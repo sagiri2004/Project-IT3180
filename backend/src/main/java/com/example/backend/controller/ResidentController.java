@@ -25,7 +25,7 @@ public class ResidentController {
 	private final ResidentService residentService;
 
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<ResidentResponse>> createResident(
 			@Valid @RequestBody ResidentRequest request) {
 		log.info("Creating new resident: {}", request.getFullName());
@@ -35,7 +35,7 @@ public class ResidentController {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<ResidentResponse>> getResidentById(@PathVariable Integer id) {
 		log.info("Fetching resident with id: {}", id);
 		ResidentResponse response = residentService.getResidentById(id);
@@ -43,7 +43,7 @@ public class ResidentController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<Page<ResidentResponse>>> getAllResidents(Pageable pageable) {
 		log.info("Fetching all residents with pagination: {}", pageable);
 		Page<ResidentResponse> response = residentService.getAllResidents(pageable);
@@ -51,7 +51,7 @@ public class ResidentController {
 	}
 
 	@GetMapping("/household/{householdId}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<ResidentResponse>>> getResidentsByHousehold(
 			@PathVariable Integer householdId) {
 		log.info("Fetching residents for household id: {}", householdId);
@@ -60,7 +60,7 @@ public class ResidentController {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<ResidentResponse>> updateResident(
 			@PathVariable Integer id, @Valid @RequestBody ResidentRequest request) {
 		log.info("Updating resident with id: {}", id);
@@ -69,7 +69,7 @@ public class ResidentController {
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<Void>> deleteResident(@PathVariable Integer id) {
 		log.info("Deleting resident with id: {}", id);
 		residentService.deleteResident(id);
@@ -77,7 +77,7 @@ public class ResidentController {
 	}
 
 	@GetMapping("/search")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<List<ResidentResponse>>> searchResidents(
 			@RequestParam String keyword) {
 		log.info("Searching residents with keyword: {}", keyword);
