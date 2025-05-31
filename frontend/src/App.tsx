@@ -19,6 +19,7 @@ import PopulationChangePage from './pages/PopulationChangePage';
 import HouseholdDetailPage from './pages/HouseholdDetailPage';
 import UserManagementPage from './pages/UserManagementPage';
 import theme, { getDesignTokens } from './theme';
+import HistoryList from './components/HistoryList';
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<'light' | 'dark'>(
@@ -68,6 +69,7 @@ const App: React.FC = () => {
               <Route path="population-changes" element={<PopulationChangePage />} />
               <Route path="households/:id" element={<HouseholdDetailPage />} />
               <Route path="users" element={<UserManagementPage />} />
+              <Route path="history" element={<HistoryList />} />
             </Route>
 
             {/* Catch all route */}
