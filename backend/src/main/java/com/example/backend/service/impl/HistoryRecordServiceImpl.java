@@ -25,8 +25,7 @@ public class HistoryRecordServiceImpl implements HistoryRecordService {
 
 	@Override
 	@Transactional
-	public void recordAction(String entityType, Integer entityId, String actionType,
-	                         String changes, String performedBy) {
+	public void recordAction(String entityType, Integer entityId, String actionType) {
 		// Validate parameters
 		if (entityType == null || entityType.isBlank()) {
 			throw new IllegalArgumentException("Entity type cannot be empty");
@@ -40,25 +39,17 @@ public class HistoryRecordServiceImpl implements HistoryRecordService {
 			throw new IllegalArgumentException("Action type cannot be empty");
 		}
 
-		if (performedBy == null || performedBy.isBlank()) {
-			log.warn("No performer specified for action. Using 'system' as default");
-			performedBy = "system";
-		}
-
 		// Create and save the history record
 		HistoryRecord record = HistoryRecord.builder()
 				.entityType(entityType)
 				.entityId(entityId)
 				.actionType(actionType)
-				.changes(changes)
-				.performedBy(performedBy)
 				.timestamp(LocalDateTime.now())
 				.build();
 
 		try {
 			historyRecordRepository.save(record);
-			log.debug("Recorded history: {} {} on {}:{} by {}",
-					actionType, changes, entityType, entityId, performedBy);
+			log.debug("Recorded action: {} on {}:{}", actionType, entityType, entityId);
 		} catch (Exception e) {
 			log.error("Failed to record history action", e);
 			// Don't throw exception to avoid affecting the main operation
@@ -74,14 +65,7 @@ public class HistoryRecordServiceImpl implements HistoryRecordService {
 
 	@Override
 	public List<HistoryRecordResponse> getHistoryByEntityAndId(String entityType, Integer entityId) {
-		return historyRecordRepository.findByEntityTypeAndEntityId(entityType, entityId).stream()
-				.map(this::mapToHistoryRecordResponse)
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	public List<HistoryRecordResponse> getHistoryByPerformedBy(String performedBy) {
-		return historyRecordRepository.findByPerformedBy(performedBy).stream()
+		return historyRecordRepository.findByEntityTypeAndEntityIdOrderByTimestampDesc(entityType, entityId).stream()
 				.map(this::mapToHistoryRecordResponse)
 				.collect(Collectors.toList());
 	}
@@ -94,7 +78,7 @@ public class HistoryRecordServiceImpl implements HistoryRecordService {
 
 	@Override
 	public List<HistoryRecordResponse> getHistoryByEntityType(String entityType) {
-		return historyRecordRepository.findByEntityType(entityType).stream()
+		return historyRecordRepository.findByEntityTypeOrderByTimestampDesc(entityType).stream()
 				.map(this::mapToHistoryRecordResponse)
 				.collect(Collectors.toList());
 	}
@@ -106,17 +90,12 @@ public class HistoryRecordServiceImpl implements HistoryRecordService {
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * Maps a HistoryRecord entity to a HistoryRecordResponse DTO
-	 */
 	private HistoryRecordResponse mapToHistoryRecordResponse(HistoryRecord historyRecord) {
 		return HistoryRecordResponse.builder()
 				.id(historyRecord.getId())
 				.entityType(historyRecord.getEntityType())
 				.entityId(historyRecord.getEntityId())
 				.actionType(historyRecord.getActionType())
-				.changes(historyRecord.getChanges())
-				.performedBy(historyRecord.getPerformedBy())
 				.timestamp(historyRecord.getTimestamp())
 				.build();
 	}

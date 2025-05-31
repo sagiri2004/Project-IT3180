@@ -75,19 +75,6 @@ public class PopulationChangeServiceImpl implements PopulationChangeService {
 		// Save to database
 		populationChange = populationChangeRepository.save(populationChange);
 
-		// Record history
-		try {
-			String changes = objectMapper.writeValueAsString(request);
-			historyRecordService.recordAction(
-					"PopulationChange",
-					populationChange.getId(),
-					"CREATE",
-					changes,
-					getCurrentUsername()
-			);
-		} catch (JsonProcessingException e) {
-			log.error("Error recording history for population change creation", e);
-		}
 
 		return mapToPopulationChangeResponse(populationChange);
 	}
@@ -147,18 +134,7 @@ public class PopulationChangeServiceImpl implements PopulationChangeService {
 		populationChange.setIsApproved(true);
 		populationChange = populationChangeRepository.save(populationChange);
 
-		// Record history
-		try {
-			historyRecordService.recordAction(
-					"PopulationChange",
-					populationChange.getId(),
-					"APPROVE",
-					"Population change approved",
-					getCurrentUsername()
-			);
-		} catch (Exception e) {
-			log.error("Error recording history for population change approval", e);
-		}
+
 
 		return mapToPopulationChangeResponse(populationChange);
 	}
@@ -176,18 +152,7 @@ public class PopulationChangeServiceImpl implements PopulationChangeService {
 		// Store response before deletion for return
 		PopulationChangeResponse response = mapToPopulationChangeResponse(populationChange);
 
-		// Record history before deletion
-		try {
-			historyRecordService.recordAction(
-					"PopulationChange",
-					populationChange.getId(),
-					"REJECT",
-					"Population change rejected",
-					getCurrentUsername()
-			);
-		} catch (Exception e) {
-			log.error("Error recording history for population change rejection", e);
-		}
+
 
 		// Delete the record
 		populationChangeRepository.delete(populationChange);
@@ -245,13 +210,7 @@ public class PopulationChangeServiceImpl implements PopulationChangeService {
 					objectMapper.writeValueAsString(oldState),
 					objectMapper.writeValueAsString(request));
 
-			historyRecordService.recordAction(
-					"PopulationChange",
-					populationChange.getId(),
-					"UPDATE",
-					changes,
-					getCurrentUsername()
-			);
+
 		} catch (JsonProcessingException e) {
 			log.error("Error recording history for population change update", e);
 		}
@@ -269,18 +228,7 @@ public class PopulationChangeServiceImpl implements PopulationChangeService {
 			throw new BadRequestException("Cannot delete an approved population change");
 		}
 
-		// Record history before deletion
-		try {
-			historyRecordService.recordAction(
-					"PopulationChange",
-					populationChange.getId(),
-					"DELETE",
-					"Population change deleted",
-					getCurrentUsername()
-			);
-		} catch (Exception e) {
-			log.error("Error recording history for population change deletion", e);
-		}
+
 
 		populationChangeRepository.deleteById(id);
 	}

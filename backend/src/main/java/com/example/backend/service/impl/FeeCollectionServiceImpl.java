@@ -81,16 +81,7 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
 		feeCollection = feeCollectionRepository.save(feeCollection);
 
 		// Record history
-		historyRecordService.recordAction(
-				"FeeCollection",
-				feeCollection.getId(),
-				"CREATE",
-				"Created fee collection for household: " + household.getHouseholdCode() +
-						", fee type: " + feeType.getName() +
-						", month: " + request.getYearMonth() +
-						", amount: " + amount,
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("FeeCollection", feeCollection.getId(), "CREATE");
 
 		return mapToFeeCollectionResponse(feeCollection);
 	}
@@ -184,14 +175,7 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
 		feeCollection = feeCollectionRepository.save(feeCollection);
 
 		// Record history
-		historyRecordService.recordAction(
-				"FeeCollection",
-				feeCollection.getId(),
-				"UPDATE",
-				"Updated fee collection from [" + oldValues + "] to [Amount: " + feeCollection.getAmount() +
-						", IsPaid: " + feeCollection.getIsPaid() + "]",
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("FeeCollection", feeCollection.getId(), "UPDATE");
 
 		return mapToFeeCollectionResponse(feeCollection);
 	}
@@ -212,15 +196,6 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
 
 		feeCollection = feeCollectionRepository.save(feeCollection);
 
-		// Record history
-		historyRecordService.recordAction(
-				"FeeCollection",
-				feeCollection.getId(),
-				"PAYMENT",
-				"Marked fee collection as paid, collected by: " + collectedBy,
-				getCurrentUsername()
-		);
-
 		return mapToFeeCollectionResponse(feeCollection);
 	}
 
@@ -230,18 +205,10 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
 		FeeCollection feeCollection = feeCollectionRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Fee collection not found with id: " + id));
 
-		// Record history before deletion
-		historyRecordService.recordAction(
-				"FeeCollection",
-				feeCollection.getId(),
-				"DELETE",
-				"Deleted fee collection for household: " + feeCollection.getHousehold().getHouseholdCode() +
-						", fee type: " + feeCollection.getFeeType().getName() +
-						", month: " + feeCollection.getYearMonth(),
-				getCurrentUsername()
-		);
-
 		feeCollectionRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("FeeCollection", id, "DELETE");
 	}
 
 	@Override
@@ -303,14 +270,6 @@ public class FeeCollectionServiceImpl implements FeeCollectionService {
 		log.info("Generated {} fee collections for {} households and {} required fee types for {}",
 				generatedCount, households.size(), requiredFeeTypes.size(), yearMonth);
 
-		// Record history
-		historyRecordService.recordAction(
-				"FeeCollection",
-				null,
-				"GENERATE",
-				"Generated " + generatedCount + " monthly fee collections for " + yearMonth,
-				"system"
-		);
 	}
 
 	@Override

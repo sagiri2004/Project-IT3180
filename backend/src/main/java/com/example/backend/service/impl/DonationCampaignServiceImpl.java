@@ -51,13 +51,7 @@ public class DonationCampaignServiceImpl implements DonationCampaignService {
 		campaign = donationCampaignRepository.save(campaign);
 
 		// Record history
-		historyRecordService.recordAction(
-				"DonationCampaign",
-				campaign.getId(),
-				"CREATE",
-				"Created donation campaign: " + campaign.getName(),
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("DonationCampaign", campaign.getId(), "CREATE");
 
 		return mapToDonationCampaignResponse(campaign);
 	}
@@ -110,17 +104,7 @@ public class DonationCampaignServiceImpl implements DonationCampaignService {
 		campaign = donationCampaignRepository.save(campaign);
 
 		// Record history
-		historyRecordService.recordAction(
-				"DonationCampaign",
-				campaign.getId(),
-				"UPDATE",
-				"Updated donation campaign from [" + oldValues + "] to [Name: " + campaign.getName() +
-						", Description: " + campaign.getDescription() +
-						", StartDate: " + campaign.getStartDate() +
-						", EndDate: " + campaign.getEndDate() +
-						", TargetAmount: " + campaign.getTargetAmount() + "]",
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("DonationCampaign", campaign.getId(), "UPDATE");
 
 		return mapToDonationCampaignResponse(campaign);
 	}
@@ -137,16 +121,10 @@ public class DonationCampaignServiceImpl implements DonationCampaignService {
 			throw new BadRequestException("Cannot delete campaign that has donations");
 		}
 
-		// Record history before deletion
-		historyRecordService.recordAction(
-				"DonationCampaign",
-				campaign.getId(),
-				"DELETE",
-				"Deleted donation campaign: " + campaign.getName(),
-				getCurrentUsername()
-		);
-
 		donationCampaignRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("DonationCampaign", id, "DELETE");
 	}
 
 	private DonationCampaignResponse mapToDonationCampaignResponse(DonationCampaign campaign) {

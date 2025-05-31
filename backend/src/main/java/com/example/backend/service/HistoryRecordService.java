@@ -12,11 +12,9 @@ public interface HistoryRecordService {
 	 *
 	 * @param entityType The type of entity (Household, Resident, PopulationChange, etc.)
 	 * @param entityId The ID of the entity
-	 * @param actionType The type of action (CREATE, UPDATE, DELETE, APPROVE, etc.)
-	 * @param changes Description of the changes made (can be JSON)
-	 * @param performedBy Username of the user who performed the action
+	 * @param actionType The type of action (CREATE, UPDATE, DELETE)
 	 */
-	void recordAction(String entityType, Integer entityId, String actionType, String changes, String performedBy);
+	void recordAction(String entityType, Integer entityId, String actionType);
 
 	/**
 	 * Gets a history record by its ID
@@ -34,14 +32,6 @@ public interface HistoryRecordService {
 	 * @return List of history record responses
 	 */
 	List<HistoryRecordResponse> getHistoryByEntityAndId(String entityType, Integer entityId);
-
-	/**
-	 * Gets all history records performed by a specific user
-	 *
-	 * @param performedBy Username of the user
-	 * @return List of history record responses
-	 */
-	List<HistoryRecordResponse> getHistoryByPerformedBy(String performedBy);
 
 	/**
 	 * Gets all history records with pagination

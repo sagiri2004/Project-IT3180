@@ -19,7 +19,5 @@ public class HistoryRecordResponse {
 	String entityType;
 	Integer entityId;
 	String actionType;
-	String changes;
-	String performedBy;
 	LocalDateTime timestamp;
 }

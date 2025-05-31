@@ -38,15 +38,6 @@ public class HistoryRecordController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "History records retrieved successfully", response));
 	}
 
-	@GetMapping("/user/{username}")
-	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
-	public ResponseEntity<ApiResponse<List<HistoryRecordResponse>>> getHistoryByUser(
-			@PathVariable String username) {
-		log.info("Fetching history records for user: {}", username);
-		List<HistoryRecordResponse> response = historyRecordService.getHistoryByPerformedBy(username);
-		return ResponseEntity.ok(new ApiResponse<>(true, "History records retrieved successfully", response));
-	}
-
 	@GetMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'LEADER', 'SUB_LEADER')")
 	public ResponseEntity<ApiResponse<Page<HistoryRecordResponse>>> getAllHistoryRecords(Pageable pageable) {

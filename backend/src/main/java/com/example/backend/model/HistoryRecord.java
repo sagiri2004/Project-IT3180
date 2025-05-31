@@ -26,13 +26,7 @@ public class HistoryRecord {
 	Integer entityId;
 
 	@Column(nullable = false)
-	String actionType; // "CREATE", "UPDATE", "DELETE", "APPROVE"
-
-	@Column(length = 1000)
-	String changes;
-
-	@Column(nullable = false)
-	String performedBy;
+	String actionType; // "CREATE", "UPDATE", "DELETE"
 
 	@CreationTimestamp
 	LocalDateTime timestamp;

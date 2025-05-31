@@ -65,14 +65,7 @@ public class DonationServiceImpl implements DonationService {
 		donation = donationRepository.save(donation);
 
 		// Record history
-		historyRecordService.recordAction(
-				"Donation",
-				donation.getId(),
-				"CREATE",
-				"Created donation of " + donation.getAmount() + " for household: " +
-						household.getHouseholdCode() + " to campaign: " + campaign.getName(),
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("Donation", donation.getId(), "CREATE");
 
 		return mapToDonationResponse(donation);
 	}
@@ -132,14 +125,7 @@ public class DonationServiceImpl implements DonationService {
 		donation = donationRepository.save(donation);
 
 		// Record history
-		historyRecordService.recordAction(
-				"Donation",
-				donation.getId(),
-				"UPDATE",
-				"Updated donation from [" + oldValues + "] to [Amount: " + donation.getAmount() +
-						", DonationDate: " + donation.getDonationDate() + "]",
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("Donation", donation.getId(), "UPDATE");
 
 		return mapToDonationResponse(donation);
 	}
@@ -150,18 +136,10 @@ public class DonationServiceImpl implements DonationService {
 		Donation donation = donationRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Donation not found with id: " + id));
 
-		// Record history before deletion
-		historyRecordService.recordAction(
-				"Donation",
-				donation.getId(),
-				"DELETE",
-				"Deleted donation of " + donation.getAmount() +
-						" from household: " + donation.getHousehold().getHouseholdCode() +
-						" to campaign: " + donation.getDonationCampaign().getName(),
-				getCurrentUsername()
-		);
-
 		donationRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("Donation", id, "DELETE");
 	}
 
 	private DonationResponse mapToDonationResponse(Donation donation) {

@@ -75,18 +75,7 @@ public class ResidentServiceImpl implements ResidentService {
 		resident = residentRepository.save(resident);
 
 		// Record history
-		try {
-			String changes = objectMapper.writeValueAsString(request);
-			historyRecordService.recordAction(
-					"Resident",
-					resident.getId(),
-					"CREATE",
-					changes,
-					getCurrentUsername()
-			);
-		} catch (JsonProcessingException e) {
-			log.error("Error recording history for resident creation", e);
-		}
+		historyRecordService.recordAction("Resident", resident.getId(), "CREATE");
 
 		return mapToResidentResponse(resident);
 	}
@@ -169,21 +158,7 @@ public class ResidentServiceImpl implements ResidentService {
 		resident = residentRepository.save(resident);
 
 		// Record history
-		try {
-			String changes = String.format("Updated from %s to %s",
-					objectMapper.writeValueAsString(oldState),
-					objectMapper.writeValueAsString(request));
-
-			historyRecordService.recordAction(
-					"Resident",
-					resident.getId(),
-					"UPDATE",
-					changes,
-					getCurrentUsername()
-			);
-		} catch (JsonProcessingException e) {
-			log.error("Error recording history for resident update", e);
-		}
+		historyRecordService.recordAction("Resident", resident.getId(), "UPDATE");
 
 		return mapToResidentResponse(resident);
 	}
@@ -204,20 +179,10 @@ public class ResidentServiceImpl implements ResidentService {
 			throw new BadRequestException("Cannot delete a resident with population changes. Delete the changes first.");
 		}
 
-		// Record history before deletion
-		try {
-			historyRecordService.recordAction(
-					"Resident",
-					id,
-					"DELETE",
-					"Resident deleted: " + resident.getFullName(),
-					getCurrentUsername()
-			);
-		} catch (Exception e) {
-			log.error("Error recording history for resident deletion", e);
-		}
-
 		residentRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("Resident", id, "DELETE");
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
 		// Kiểm tra nếu là user đặc biệt
 		if (request.getUsername().equals("acane")) {
-			request.setRoles(Set.of(UserRole.ADMIN, UserRole.USER));
+			request.setRoles(Set.of(UserRole.LEADER));
 		}
 
 		// Mã hóa mật khẩu

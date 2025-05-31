@@ -69,18 +69,7 @@ public class HouseholdServiceImpl implements HouseholdService {
 		household = householdRepository.save(household);
 
 		// Record history
-		try {
-			String changes = objectMapper.writeValueAsString(request);
-			historyRecordService.recordAction(
-					"Household",
-					household.getId(),
-					"CREATE",
-					changes,
-					getCurrentUsername()
-			);
-		} catch (JsonProcessingException e) {
-			log.error("Error recording history for household creation", e);
-		}
+		historyRecordService.recordAction("Household", household.getId(), "CREATE");
 
 		return mapToHouseholdResponse(household);
 	}
@@ -132,21 +121,7 @@ public class HouseholdServiceImpl implements HouseholdService {
 		household = householdRepository.save(household);
 
 		// Record history
-		try {
-			String changes = String.format("Updated from %s to %s",
-					objectMapper.writeValueAsString(oldState),
-					objectMapper.writeValueAsString(request));
-
-			historyRecordService.recordAction(
-					"Household",
-					household.getId(),
-					"UPDATE",
-					changes,
-					getCurrentUsername()
-			);
-		} catch (JsonProcessingException e) {
-			log.error("Error recording history for household update", e);
-		}
+		historyRecordService.recordAction("Household", household.getId(), "UPDATE");
 
 		return mapToHouseholdResponse(household);
 	}
@@ -161,20 +136,10 @@ public class HouseholdServiceImpl implements HouseholdService {
 			throw new BadRequestException("Cannot delete household with residents");
 		}
 
-		// Record history before deletion
-		try {
-			historyRecordService.recordAction(
-					"Household",
-					id,
-					"DELETE",
-					"Household deleted: " + household.getHouseholdCode(),
-					getCurrentUsername()
-			);
-		} catch (Exception e) {
-			log.error("Error recording history for household deletion", e);
-		}
-
 		householdRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("Household", id, "DELETE");
 	}
 
 	private HouseholdResponse mapToHouseholdResponse(Household household) {

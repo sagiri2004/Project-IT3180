@@ -53,13 +53,7 @@ public class FeeTypeServiceImpl implements FeeTypeService {
 		feeType = feeTypeRepository.save(feeType);
 
 		// Record history
-		historyRecordService.recordAction(
-				"FeeType",
-				feeType.getId(),
-				"CREATE",
-				"Created fee type: " + feeType.getName(),
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("FeeType", feeType.getId(), "CREATE");
 
 		return mapToFeeTypeResponse(feeType);
 	}
@@ -115,17 +109,7 @@ public class FeeTypeServiceImpl implements FeeTypeService {
 		feeType = feeTypeRepository.save(feeType);
 
 		// Record history
-		historyRecordService.recordAction(
-				"FeeType",
-				feeType.getId(),
-				"UPDATE",
-				"Updated fee type from [" + oldValues + "] to [Name: " + feeType.getName() +
-						", Description: " + feeType.getDescription() +
-						", PricePerM2: " + feeType.getPricePerM2() +
-						", IsPerM2: " + feeType.getIsPerM2() +
-						", IsRequired: " + feeType.getIsRequired() + "]",
-				getCurrentUsername()
-		);
+		historyRecordService.recordAction("FeeType", feeType.getId(), "UPDATE");
 
 		return mapToFeeTypeResponse(feeType);
 	}
@@ -142,16 +126,10 @@ public class FeeTypeServiceImpl implements FeeTypeService {
 			throw new BadRequestException("Cannot delete fee type as it is used in fee collections");
 		}
 
-		// Record history before deletion
-		historyRecordService.recordAction(
-				"FeeType",
-				feeType.getId(),
-				"DELETE",
-				"Deleted fee type: " + feeType.getName(),
-				getCurrentUsername()
-		);
-
 		feeTypeRepository.deleteById(id);
+
+		// Record history
+		historyRecordService.recordAction("FeeType", id, "DELETE");
 	}
 
 	private FeeTypeResponse mapToFeeTypeResponse(FeeType feeType) {
