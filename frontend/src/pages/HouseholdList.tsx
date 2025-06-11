@@ -169,15 +169,29 @@ const HouseholdList: React.FC = () => {
             headerName: 'Ngày đăng ký',
             width: 150,
             valueFormatter: (params: any) => {
-                try {
-                    const date = new Date(params.value);
-                    if (isNaN(date.getTime())) {
-                        return 'N/A';
+                let value = params.value;
+                if (!value && params.row && params.row.createdAt) {
+                    value = params.row.createdAt;
+                }
+                if (!value) return 'N/A';
+                let date: Date;
+                // Nếu là số (timestamp) hoặc chuỗi
+                if (typeof value === 'number') {
+                    date = new Date(value);
+                } else if (typeof value === 'string') {
+                    // Nếu là chuỗi số (timestamp dạng string)
+                    if (/^\\d+$/.test(value)) {
+                        date = new Date(Number(value));
+                    } else {
+                        date = new Date(value);
                     }
-                    return format(date, 'dd/MM/yyyy', { locale: vi });
-                } catch (error) {
+                } else {
                     return 'N/A';
                 }
+                if (isNaN(date.getTime())) {
+                    return 'N/A';
+                }
+                return format(date, 'dd/MM/yyyy', { locale: vi });
             }
         },
         {

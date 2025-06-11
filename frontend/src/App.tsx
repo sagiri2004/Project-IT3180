@@ -18,6 +18,9 @@ import FeeTypeDetailPage from './pages/FeeTypeDetailPage';
 import PopulationChangePage from './pages/PopulationChangePage';
 import HouseholdDetailPage from './pages/HouseholdDetailPage';
 import UserManagementPage from './pages/UserManagementPage';
+import VehiclePage from './pages/VehiclePage';
+import VehicleFeePage from './pages/VehicleFeePage';
+import UtilityBillPage from './pages/UtilityBillPage';
 import theme, { getDesignTokens } from './theme';
 import HistoryList from './components/HistoryList';
 
@@ -70,6 +73,9 @@ const App: React.FC = () => {
               <Route path="households/:id" element={<HouseholdDetailPage />} />
               <Route path="users" element={<UserManagementPage />} />
               <Route path="history" element={<HistoryList />} />
+              <Route path="vehicles" element={<VehiclePage />} />
+              <Route path="vehicle-fees" element={<VehicleFeePage />} />
+              <Route path="utility-bills" element={<UtilityBillPage />} />
             </Route>
 
             {/* Catch all route */}
