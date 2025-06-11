@@ -31,7 +31,10 @@ import {
     DarkMode as DarkModeIcon,
     Dashboard as DashboardIcon,
     AttachMoney as MoneyIcon,
-    Campaign as CampaignIcon
+    Campaign as CampaignIcon,
+    DirectionsCar as CarIcon,
+    LocalParking as ParkingIcon,
+    LocalAtm as UtilityIcon
 } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
@@ -98,6 +101,9 @@ const Layout: React.FC<{ toggleTheme?: () => void; mode?: 'light' | 'dark' }> = 
         { text: 'Đóng góp', icon: MoneyIcon, path: '/donations' },
         { text: 'Chiến dịch', icon: CampaignIcon, path: '/donation-campaigns' },
         { text: 'Thu phí', icon: PaymentIcon, path: '/fees' },
+        { text: 'Phương tiện', icon: CarIcon, path: '/vehicles' },
+        { text: 'Phí gửi xe', icon: ParkingIcon, path: '/vehicle-fees' },
+        { text: 'Hóa đơn tiện ích', icon: UtilityIcon, path: '/utility-bills' },
         { text: 'Người dùng', icon: PeopleIcon, path: '/users' },
         { text: 'Lịch sử', icon: HistoryIcon, path: '/history' }
     ];
