@@ -11,6 +11,7 @@ import { fetchResidents, deleteResident, updateResident, createResident } from '
 import { Resident, CreateResidentRequest, Gender, RelationshipType, UpdateResidentRequest } from '../types/resident';
 import SmartTable from '../components/SmartTable';
 import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
 
 const ResidentList: React.FC = () => {
   const theme = useTheme();
@@ -147,7 +148,13 @@ const ResidentList: React.FC = () => {
       headerName: 'Ngày sinh',
       width: 120,
       editable: true,
-      valueFormatter: (params: any) => new Date(params.value).toLocaleDateString('vi-VN'),
+      renderCell: (params: any) => {
+        const date = params.value;
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return date;
+        return format(d, 'dd/MM/yyyy');
+      }
     },
     {
       field: 'gender',
@@ -185,7 +192,13 @@ const ResidentList: React.FC = () => {
       field: 'createdAt',
       headerName: 'Ngày tạo',
       width: 160,
-      valueFormatter: (params: any) => new Date(params.value).toLocaleString('vi-VN'),
+      renderCell: (params: any) => {
+        const date = params.value;
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return date;
+        return format(d, 'dd/MM/yyyy HH:mm:ss');
+      }
     },
     {
       field: 'actions',

@@ -14,8 +14,13 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Chip,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  InputAdornment
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon, Autorenew as AutorenewIcon, EventAvailable as EventAvailableIcon } from '@mui/icons-material';
 import SmartTable from '../components/SmartTable';
 import { vehicleFeeService } from '../services/vehicleFee.service';
 import { vehicleService } from '../services/vehicle.service';
@@ -24,6 +29,13 @@ import { Vehicle } from '../types/vehicle';
 import { format } from 'date-fns';
 import householdService from '../services/household.service';
 import { Household } from '../types/household';
+import { vehicleFeeConfigService } from '../services/vehicleFeeConfig.service';
+import { VehicleFeeConfig, VehicleType, TicketType } from '../types/vehicleFeeConfig';
+
+const TICKET_TYPES = [
+  { value: 'MONTHLY', label: 'Vé tháng' },
+  { value: 'DAILY', label: 'Vé ngày' },
+];
 
 const VehicleFeePage: React.FC = () => {
   const navigate = useNavigate();
@@ -37,17 +49,29 @@ const VehicleFeePage: React.FC = () => {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [selectedHouseholdId, setSelectedHouseholdId] = useState<number | ''>('');
   const [selectedVehicleId, setSelectedVehicleId] = useState<number | ''>('');
-  const [formData, setFormData] = useState<VehicleFeeRequest>({
+  const [formData, setFormData] = useState<any>({
     vehicleId: 0,
+    ticketType: 'MONTHLY',
     monthYear: format(new Date(), 'yyyy-MM'),
+    day: '',
     amount: 0,
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [totalRows, setTotalRows] = useState(0);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
+  const [dialogHouseholdId, setDialogHouseholdId] = useState<number | ''>('');
+  const [dialogVehicles, setDialogVehicles] = useState<Vehicle[]>([]);
+  const [dialogVehicleId, setDialogVehicleId] = useState<number | ''>('');
+  const [feeConfigs, setFeeConfigs] = useState<VehicleFeeConfig[]>([]);
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'vehicleId', headerName: 'Phương tiện', width: 120 },
-    { field: 'monthYear', headerName: 'Tháng/Năm', width: 120 },
+    { field: 'ticketType', headerName: 'Loại vé', width: 110, renderCell: (params: any) => (
+      <Chip label={params.row.ticketType === 'DAILY' ? 'Vé ngày' : 'Vé tháng'} color={params.row.ticketType === 'DAILY' ? 'info' : 'primary'} size="small" />
+    ) },
+    { field: 'monthYear', headerName: 'Tháng/Năm', width: 110 },
+    { field: 'day', headerName: 'Ngày', width: 100 },
     { 
       field: 'amount', 
       headerName: 'Số tiền', 
@@ -60,54 +84,45 @@ const VehicleFeePage: React.FC = () => {
       field: 'isPaid', 
       headerName: 'Trạng thái', 
       width: 120,
-      valueGetter: (params: any) => params?.row?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'
-    },
-    { 
-      field: 'paidDate', 
-      headerName: 'Ngày thanh toán', 
-      width: 150,
-      valueGetter: (params: any) => params?.row?.paidDate 
-        ? format(new Date(params.row.paidDate), 'dd/MM/yyyy') 
-        : ''
-    },
-    { field: 'paidBy', headerName: 'Người thanh toán', width: 150 },
-    { field: 'createdBy', headerName: 'Người tạo', width: 150 },
-    { 
-      field: 'createdAt', 
-      headerName: 'Ngày tạo', 
-      width: 180,
-      valueGetter: (params: any) => params?.row?.createdAt 
-        ? format(new Date(params.row.createdAt), 'dd/MM/yyyy HH:mm:ss') 
-        : ''
+      renderCell: (params: any) => (
+        <Chip label={params.row.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'} color={params.row.isPaid ? 'success' : 'default'} size="small" />
+      )
     },
     {
       field: 'actions',
       headerName: 'Thao tác',
-      width: 250,
+      width: 280,
       renderCell: (params: any) => (
-        <div className="flex gap-2">
-          <IconButton 
-            className="text-blue-600 hover:bg-blue-100" 
-            onClick={() => handleEdit(params.row)}
-          >
-            <EditIcon />
+        <Box display="flex" gap={1}>
+          <IconButton color="primary" onClick={() => handleEdit(params.row)} size="small">
+            <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton 
-            className="text-red-600 hover:bg-red-100" 
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <DeleteIcon />
+          <IconButton color="error" onClick={() => handleDelete(params.row.id)} size="small">
+            <DeleteIcon fontSize="small" />
           </IconButton>
           {!params.row.isPaid && (
             <Button
               size="small"
-              className="bg-green-100 text-green-700 hover:bg-green-200"
+              variant="outlined"
+              color="success"
+              startIcon={<EventAvailableIcon />}
               onClick={() => handleMarkAsPaid(params.row.id)}
             >
-              Đã thanh toán
+              Thanh toán
             </Button>
           )}
-        </div>
+          {!params.row.isPaid && params.row.ticketType === 'MONTHLY' && (
+            <Button
+              size="small"
+              variant="outlined"
+              color="info"
+              startIcon={<AutorenewIcon />}
+              onClick={() => handleRenew(params.row)}
+            >
+              Gia hạn
+            </Button>
+          )}
+        </Box>
       ),
     },
   ];
@@ -117,7 +132,7 @@ const VehicleFeePage: React.FC = () => {
       const response = await householdService.getHouseholds();
       setHouseholds(response.content);
     } catch (error) {
-      console.error('Error loading households:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải hộ gia đình', severity: 'error' });
     }
   };
 
@@ -126,7 +141,6 @@ const VehicleFeePage: React.FC = () => {
       setVehicles([]);
       return;
     }
-
     try {
       const response = await vehicleService.getVehiclesByHousehold(
         selectedHouseholdId,
@@ -135,7 +149,7 @@ const VehicleFeePage: React.FC = () => {
       );
       setVehicles(response.content);
     } catch (error) {
-      console.error('Error loading vehicles:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải phương tiện', severity: 'error' });
     }
   };
 
@@ -149,10 +163,17 @@ const VehicleFeePage: React.FC = () => {
       setFees(response.content);
       setTotalRows(response.totalElements);
     } catch (error) {
-      console.error('Error loading fees:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải phí gửi xe', severity: 'error' });
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadFeeConfigs = async () => {
+    try {
+      const data = await vehicleFeeConfigService.getAll();
+      setFeeConfigs(data);
+    } catch {}
   };
 
   useEffect(() => {
@@ -167,27 +188,60 @@ const VehicleFeePage: React.FC = () => {
     loadFees();
   }, [paginationModel]);
 
+  useEffect(() => { loadFeeConfigs(); }, []);
+
   const handleAdd = () => {
-    if (!selectedVehicleId) {
-      alert('Vui lòng chọn phương tiện trước khi thêm phí');
-      return;
-    }
     setSelectedFee(null);
+    setDialogHouseholdId('');
+    setDialogVehicles([]);
+    setDialogVehicleId('');
     setFormData({
-      vehicleId: selectedVehicleId,
+      vehicleId: 0,
+      ticketType: 'MONTHLY',
       monthYear: format(new Date(), 'yyyy-MM'),
+      day: '',
       amount: 0,
     });
+    setFormErrors({});
     setOpenDialog(true);
   };
 
-  const handleEdit = (fee: VehicleFee) => {
+  const handleDialogHouseholdChange = async (householdId: number | '') => {
+    setDialogHouseholdId(householdId);
+    setDialogVehicleId('');
+    setFormData((prev: any) => ({ ...prev, vehicleId: 0 }));
+    if (householdId) {
+      try {
+        const response = await vehicleService.getVehiclesByHousehold(householdId, 0, 100);
+        setDialogVehicles(response.content);
+      } catch {
+        setDialogVehicles([]);
+      }
+    } else {
+      setDialogVehicles([]);
+    }
+  };
+
+  const handleDialogVehicleChange = (vehicleId: number | '') => {
+    setDialogVehicleId(vehicleId);
+    setFormData((prev: any) => ({ ...prev, vehicleId: vehicleId || 0 }));
+  };
+
+  const handleEdit = (fee: any) => {
     setSelectedFee(fee);
+    const vehicle = vehicles.find(v => v.id === fee.vehicleId);
+    const householdId = vehicle ? vehicle.householdId : '';
+    setDialogHouseholdId(householdId);
+    setDialogVehicleId(fee.vehicleId);
+    setDialogVehicles(vehicle ? [vehicle] : []);
     setFormData({
       vehicleId: fee.vehicleId,
+      ticketType: fee.ticketType,
       monthYear: fee.monthYear,
+      day: fee.day || '',
       amount: fee.amount,
     });
+    setFormErrors({});
     setOpenDialog(true);
   };
 
@@ -195,9 +249,10 @@ const VehicleFeePage: React.FC = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa phí này?')) {
       try {
         await vehicleFeeService.deleteVehicleFee(id);
+        setSnackbar({ open: true, message: 'Xóa phí thành công', severity: 'success' });
         loadFees();
       } catch (error) {
-        console.error('Error deleting fee:', error);
+        setSnackbar({ open: true, message: 'Lỗi xóa phí', severity: 'error' });
       }
     }
   };
@@ -205,153 +260,227 @@ const VehicleFeePage: React.FC = () => {
   const handleMarkAsPaid = async (id: number) => {
     try {
       await vehicleFeeService.markAsPaid(id);
+      setSnackbar({ open: true, message: 'Đã đánh dấu thanh toán', severity: 'success' });
       loadFees();
     } catch (error) {
-      console.error('Error marking fee as paid:', error);
+      setSnackbar({ open: true, message: 'Lỗi đánh dấu thanh toán', severity: 'error' });
     }
   };
 
+  const handleRenew = async (fee: any) => {
+    try {
+      await vehicleFeeService.renewMonthlyTicket(fee.id);
+      setSnackbar({ open: true, message: 'Gia hạn vé tháng thành công', severity: 'success' });
+      loadFees();
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Lỗi gia hạn vé tháng', severity: 'error' });
+    }
+  };
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formData.amount || formData.amount <= 0) errors.amount = 'Nhập số tiền';
+    if (formData.ticketType === 'MONTHLY' && !formData.monthYear) errors.monthYear = 'Chọn tháng/năm';
+    if (formData.ticketType === 'DAILY' && !formData.day) errors.day = 'Chọn ngày';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) return;
     try {
       if (selectedFee) {
-        await vehicleFeeService.updateVehicleFee(selectedFee.id, formData);
+        await vehicleFeeService.updateVehicleFee(selectedFee.id, { ...formData, vehicleId: dialogVehicleId });
+        setSnackbar({ open: true, message: 'Cập nhật phí thành công', severity: 'success' });
       } else {
-        await vehicleFeeService.createVehicleFee(formData);
+        if (formData.ticketType === 'DAILY') {
+          await vehicleFeeService.createDayTicket({ ...formData, vehicleId: dialogVehicleId });
+        } else {
+          await vehicleFeeService.createVehicleFee({ ...formData, vehicleId: dialogVehicleId });
+        }
+        setSnackbar({ open: true, message: 'Thêm phí thành công', severity: 'success' });
       }
       setOpenDialog(false);
       loadFees();
     } catch (error) {
-      console.error('Error saving fee:', error);
+      setSnackbar({ open: true, message: 'Lỗi lưu phí', severity: 'error' });
     }
   };
 
+  const handleVehicleOrTicketTypeChange = (vehicleType: VehicleType, ticketType: TicketType) => {
+    setFormData(f => {
+      const found = feeConfigs.find(cfg => cfg.vehicleType === vehicleType && cfg.ticketType === ticketType);
+      return { ...f, vehicleType, ticketType, amount: found ? found.price : 0 };
+    });
+  };
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="font-bold text-gray-800">
+      <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+        <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+          <Typography variant="h4" fontWeight={700}>
             Quản lý phí gửi xe
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAdd}
-            className="bg-blue-600 hover:bg-blue-700"
-            disabled={!selectedVehicleId}
-          >
-            Thêm phí gửi xe
-          </Button>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex gap-4 mb-6">
-            <FormControl fullWidth className="max-w-xs">
-              <InputLabel>Chọn hộ gia đình</InputLabel>
-              <Select
-                value={selectedHouseholdId}
-                label="Chọn hộ gia đình"
-                onChange={(e) => {
-                  setSelectedHouseholdId(e.target.value as number);
-                  setSelectedVehicleId('');
-                }}
-                className="rounded-md"
-              >
-                <MenuItem value="">
-                  <em>Tất cả</em>
-                </MenuItem>
-                {households.map((household) => (
-                  <MenuItem key={household.id} value={household.id}>
-                    {household.householdCode} - {household.ownerName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth className="max-w-xs">
-              <InputLabel>Chọn phương tiện</InputLabel>
-              <Select
-                value={selectedVehicleId}
-                label="Chọn phương tiện"
-                onChange={(e) => setSelectedVehicleId(e.target.value as number)}
-                disabled={!selectedHouseholdId}
-                className="rounded-md"
-              >
-                <MenuItem value="">
-                  <em>Tất cả</em>
-                </MenuItem>
-                {vehicles.map((vehicle) => (
-                  <MenuItem key={vehicle.id} value={vehicle.id}>
-                    {vehicle.licensePlate} - {vehicle.type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
-          <SmartTable
-            columns={columns}
-            rows={fees}
-            rowCount={totalRows}
-            loading={loading}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            onSearch={setSearchValue}
-            searchValue={searchValue}
-          />
-        </div>
-
+          <Box>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAdd}
+              sx={{ fontWeight: 600 }}
+            >
+              Thêm phí gửi xe
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => navigate('/vehicle-fee-configs')}
+              sx={{ ml: 2 }}
+            >
+              Cấu hình giá vé
+            </Button>
+          </Box>
+        </Box>
+        <Box sx={{ bgcolor: 'white', borderRadius: 2, boxShadow: 1, p: 2 }}>
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <SmartTable
+              columns={columns}
+              rows={fees}
+              rowCount={totalRows}
+              loading={loading}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              onSearch={setSearchValue}
+              searchValue={searchValue}
+            />
+          )}
+        </Box>
         <Dialog 
           open={openDialog} 
           onClose={() => setOpenDialog(false)}
-          maxWidth="sm"
+          maxWidth="xs"
           fullWidth
         >
-          <DialogTitle className="bg-gray-50 border-b">
-            <Typography variant="h6" className="font-semibold">
+          <DialogTitle>
+            <Typography variant="h6" fontWeight={600}>
               {selectedFee ? 'Chỉnh sửa phí gửi xe' : 'Thêm phí gửi xe mới'}
             </Typography>
           </DialogTitle>
-          <DialogContent className="pt-6">
-            <div className="space-y-4">
-              <TextField
-                fullWidth
-                label="Tháng/Năm"
-                type="month"
-                value={formData.monthYear}
-                onChange={(e) => setFormData({ ...formData, monthYear: e.target.value })}
-                InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                className="rounded-md"
-              />
+          <DialogContent sx={{ pt: 2 }}>
+            <Box display="flex" flexDirection="column" gap={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Hộ gia đình</InputLabel>
+                <Select
+                  value={dialogHouseholdId}
+                  label="Hộ gia đình"
+                  onChange={e => handleDialogHouseholdChange(e.target.value as number)}
+                >
+                  <MenuItem value="">
+                    <em>Chọn hộ gia đình</em>
+                  </MenuItem>
+                  {households.map((household) => (
+                    <MenuItem key={household.id} value={household.id}>
+                      {household.householdCode} - {household.ownerName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth size="small">
+                <InputLabel>Phương tiện</InputLabel>
+                <Select
+                  value={dialogVehicleId}
+                  label="Phương tiện"
+                  onChange={e => handleDialogVehicleChange(e.target.value as number)}
+                  disabled={!dialogHouseholdId}
+                >
+                  <MenuItem value="">
+                    <em>Chọn phương tiện</em>
+                  </MenuItem>
+                  {dialogVehicles.map((vehicle) => (
+                    <MenuItem key={vehicle.id} value={vehicle.id}>
+                      {vehicle.licensePlate} - {vehicle.type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth size="small">
+                <InputLabel>Loại xe</InputLabel>
+                <Select
+                  value={formData.vehicleType}
+                  label="Loại xe"
+                  onChange={e => handleVehicleOrTicketTypeChange(e.target.value as VehicleType, formData.ticketType)}
+                >
+                  <MenuItem value="CAR">Ô tô</MenuItem>
+                  <MenuItem value="MOTORBIKE">Xe máy</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth size="small">
+                <InputLabel>Loại vé</InputLabel>
+                <Select
+                  value={formData.ticketType}
+                  label="Loại vé"
+                  onChange={e => handleVehicleOrTicketTypeChange(formData.vehicleType, e.target.value as TicketType)}
+                >
+                  <MenuItem value="MONTHLY">Vé tháng</MenuItem>
+                  <MenuItem value="DAILY">Vé ngày</MenuItem>
+                </Select>
+              </FormControl>
+              {formData.ticketType === 'MONTHLY' && (
+                <TextField
+                  fullWidth
+                  label="Tháng/Năm"
+                  type="month"
+                  value={formData.monthYear}
+                  onChange={e => setFormData({ ...formData, monthYear: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!formErrors.monthYear}
+                  helperText={formErrors.monthYear}
+                />
+              )}
+              {formData.ticketType === 'DAILY' && (
+                <TextField
+                  fullWidth
+                  label="Ngày"
+                  type="date"
+                  value={formData.day}
+                  onChange={e => setFormData({ ...formData, day: e.target.value })}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!formErrors.day}
+                  helperText={formErrors.day}
+                />
+              )}
               <TextField
                 fullWidth
                 label="Số tiền (VNĐ)"
                 type="number"
                 value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                variant="outlined"
-                className="rounded-md"
+                error={!!formErrors.amount}
+                helperText={formErrors.amount}
+                disabled
               />
-            </div>
+            </Box>
           </DialogContent>
-          <DialogActions className="bg-gray-50 border-t p-4">
-            <Button 
-              onClick={() => setOpenDialog(false)}
-              className="text-gray-600 hover:bg-gray-100"
-            >
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color="inherit">
               Hủy
             </Button>
-            <Button 
-              onClick={handleSubmit}
-              variant="contained"
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button onClick={handleSubmit} variant="contained">
               {selectedFee ? 'Cập nhật' : 'Thêm mới'}
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-    </div>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Box>
   );
 };
 

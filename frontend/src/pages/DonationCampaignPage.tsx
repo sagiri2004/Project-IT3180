@@ -143,53 +143,83 @@ const DonationCampaignPage: React.FC = () => {
       field: 'startDate',
       headerName: 'Ngày bắt đầu',
       width: 120,
-      type: 'date',
-      valueGetter: (params: any) => params && params.value ? new Date(params.value) : null,
-      valueFormatter: (params: any) => (params && params.value ? formatDate(params.value) : 'N/A'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (!value) return '-';
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return '-';
+        return format(d, 'dd/MM/yyyy');
+      },
     },
     {
-      field: 'endDate', 
+      field: 'endDate',
       headerName: 'Ngày kết thúc',
       width: 120,
-      type: 'date',
-      valueGetter: (params: any) => params && params.value ? new Date(params.value) : null,
-      valueFormatter: (params: any) => (params && params.value ? formatDate(params.value) : '-'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (!value) return '-';
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return '-';
+        return format(d, 'dd/MM/yyyy');
+      },
     },
     {
       field: 'targetAmount',
       headerName: 'Mục tiêu (VNĐ)',
       width: 140,
-      type: 'number' as const,
-      valueFormatter: (params: any) => (params && params.value != null ? params.value.toLocaleString('vi-VN') : '-'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (value == null) return '-';
+        return value.toLocaleString('vi-VN');
+      },
     },
     {
       field: 'totalDonated',
       headerName: 'Đã quyên góp (VNĐ)',
       width: 140,
-      type: 'number' as const,
-      valueFormatter: (params: any) => (params && params.value != null ? params.value.toLocaleString('vi-VN') : '0'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (value == null) return '0';
+        return value.toLocaleString('vi-VN');
+      },
     },
     {
       field: 'remainingAmount',
       headerName: 'Còn thiếu (VNĐ)',
       width: 140,
-      type: 'number' as const,
-      valueFormatter: (params: any) => (params && params.value != null ? params.value.toLocaleString('vi-VN') : '-'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (value == null) return '-';
+        return value.toLocaleString('vi-VN');
+      },
     },
     {
       field: 'totalDonors',
       headerName: 'Số hộ đã đóng',
       width: 120,
-      type: 'number' as const,
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (value == null) return '0';
+        return value;
+      },
     },
-    { field: 'createdBy', headerName: 'Người tạo', width: 120 },
+    {
+      field: 'createdBy',
+      headerName: 'Người tạo',
+      width: 120,
+      renderCell: (params: any) => params.value || '-',
+    },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
       width: 160,
-      type: 'dateTime',
-      valueGetter: (params: any) => params && params.value ? new Date(params.value) : null,
-      valueFormatter: (params: any) => (params && params.value ? formatDateTime(params.value) : 'N/A'),
+      renderCell: (params: any) => {
+        const value = params.value;
+        if (!value) return '-';
+        const d = new Date(value);
+        if (isNaN(d.getTime())) return '-';
+        return format(d, 'dd/MM/yyyy HH:mm');
+      },
     },
     {
       field: 'actions',

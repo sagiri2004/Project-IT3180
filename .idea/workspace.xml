@@ -5,14 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a868420d-fb85-48b7-a607-9882adbc211c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/response/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/response/ApiResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/enums/ApartmentType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/controller/VehicleFeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/controller/VehicleFeeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/request/VehicleFeeRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/request/VehicleFeeRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/response/VehicleFeeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/dto/response/VehicleFeeResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/VehicleFee.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/VehicleFee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/enums/UtilityType.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/enums/UtilityType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/enums/VehicleType.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/model/enums/VehicleType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/service/VehicleFeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/service/VehicleFeeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/service/impl/VehicleFeeServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/backend/service/impl/VehicleFeeServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/HouseholdList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/HouseholdList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/services/household.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/household.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/types/enums.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/types/enums.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/data/generate_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/data/generate_sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/FeeCollectionDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/FeeCollectionDialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DashboardPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DonationCampaignDetailPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DonationCampaignDetailPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DonationCampaignPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DonationCampaignPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DonationPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DonationPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/FeeManagementPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/FeeManagementPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/PopulationChangePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/PopulationChangePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ResidentList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ResidentList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/UtilityBillPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/UtilityBillPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/VehicleFeePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/VehicleFeePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/VehiclePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/VehiclePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/vehicleFee.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/vehicleFee.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,36 +74,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.BackendApplication.executor": "Run",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "git-widget-placeholder": "develop",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/sagiri/Code/Project-IT3180",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/sagiri/Code/Project-IT3180&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="backend (2) (com.example)" />

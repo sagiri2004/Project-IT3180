@@ -11,8 +11,13 @@ import {
   MenuItem,
   IconButton,
   Typography,
+  Chip,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  InputAdornment
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, Search as SearchIcon, DirectionsCar, TwoWheeler } from '@mui/icons-material';
 import SmartTable from '../components/SmartTable';
 import { vehicleService } from '../services/vehicle.service';
 import { Vehicle, VehicleRequest } from '../types/vehicle';
@@ -32,71 +37,63 @@ const VehiclePage: React.FC = () => {
     householdId: 0,
     licensePlate: '',
     type: VehicleType.MOTORBIKE,
+    registeredDate: '',
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'householdId', headerName: 'Hộ gia đình', width: 120 },
     { field: 'licensePlate', headerName: 'Biển số', width: 150 },
-    { 
-      field: 'type', 
-      headerName: 'Loại xe', 
+    {
+      field: 'type',
+      headerName: 'Loại xe',
       width: 120,
-      valueGetter: (params: any) => params?.row?.type === VehicleType.MOTORBIKE ? 'Xe máy' : 'Ô tô'
+      renderCell: (params: any) => (
+        <Box display="flex" alignItems="center" gap={1}>
+          {params.row.type === 'CAR' ? <DirectionsCar color="primary" fontSize="small" /> : <TwoWheeler color="secondary" fontSize="small" />}
+          <span>{params.row.type === 'CAR' ? 'Ô tô' : 'Xe máy'}</span>
+        </Box>
+      ),
     },
-    { 
-      field: 'registeredDate', 
-      headerName: 'Ngày đăng ký', 
-      width: 150,
-      valueGetter: (params: any) => params?.row?.registeredDate 
-        ? format(new Date(params.row.registeredDate), 'dd/MM/yyyy') 
-        : ''
-    },
-    { 
-      field: 'isActive', 
-      headerName: 'Trạng thái', 
+    {
+      field: 'isActive',
+      headerName: 'Trạng thái',
       width: 120,
-      valueGetter: (params: any) => params?.row?.isActive ? 'Hoạt động' : 'Vô hiệu'
+      renderCell: (params: any) => (
+        <Chip
+          label={params.row.isActive ? 'Hoạt động' : 'Vô hiệu'}
+          color={params.row.isActive ? 'success' : 'default'}
+          size="small"
+        />
+      ),
     },
-    { field: 'createdBy', headerName: 'Người tạo', width: 150 },
-    { 
-      field: 'createdAt', 
-      headerName: 'Ngày tạo', 
-      width: 180,
-      valueGetter: (params: any) => params?.row?.createdAt 
-        ? format(new Date(params.row.createdAt), 'dd/MM/yyyy HH:mm:ss') 
-        : ''
-    },
+    { field: 'createdBy', headerName: 'Người tạo', width: 120 },
+
     {
       field: 'actions',
       headerName: 'Thao tác',
-      width: 220,
+      width: 180,
+      sortable: false,
+      filterable: false,
       renderCell: (params: any) => (
-        <div className="flex gap-2">
-          <IconButton 
-            className="text-blue-600 hover:bg-blue-100" 
-            onClick={() => handleEdit(params.row)}
-          >
-            <EditIcon />
+        <Box display="flex" gap={1}>
+          <IconButton color="primary" onClick={() => handleEdit(params.row)} size="small">
+            <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton 
-            className="text-red-600 hover:bg-red-100" 
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <DeleteIcon />
+          <IconButton color="error" onClick={() => handleDelete(params.row.id)} size="small">
+            <DeleteIcon fontSize="small" />
           </IconButton>
           <Button
             size="small"
-            className={`${
-              params.row.isActive 
-                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
-                : 'bg-green-100 text-green-700 hover:bg-green-200'
-            }`}
+            variant={params.row.isActive ? 'outlined' : 'contained'}
+            color={params.row.isActive ? 'inherit' : 'success'}
             onClick={() => handleToggleStatus(params.row.id)}
           >
             {params.row.isActive ? 'Vô hiệu' : 'Kích hoạt'}
           </Button>
-        </div>
+        </Box>
       ),
     },
   ];
@@ -106,12 +103,16 @@ const VehiclePage: React.FC = () => {
       setLoading(true);
       const response = await vehicleService.getVehicles(
         paginationModel.page,
-        paginationModel.pageSize
+        paginationModel.pageSize,
+        searchValue
       );
-      setVehicles(response.content);
-      setTotalRows(response.totalElements);
+      // response.content, response.totalElements
+      setVehicles(response.content || []);
+      setTotalRows(response.totalElements || 0);
     } catch (error) {
-      console.error('Error loading vehicles:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải dữ liệu phương tiện', severity: 'error' });
+      setVehicles([]);
+      setTotalRows(0);
     } finally {
       setLoading(false);
     }
@@ -119,7 +120,8 @@ const VehiclePage: React.FC = () => {
 
   useEffect(() => {
     loadVehicles();
-  }, [paginationModel]);
+    // eslint-disable-next-line
+  }, [paginationModel.page, paginationModel.pageSize, searchValue]);
 
   const handleAdd = () => {
     setSelectedVehicle(null);
@@ -127,7 +129,9 @@ const VehiclePage: React.FC = () => {
       householdId: 0,
       licensePlate: '',
       type: VehicleType.MOTORBIKE,
+      registeredDate: '',
     });
+    setFormErrors({});
     setOpenDialog(true);
   };
 
@@ -139,6 +143,7 @@ const VehiclePage: React.FC = () => {
       type: vehicle.type,
       registeredDate: vehicle.registeredDate,
     });
+    setFormErrors({});
     setOpenDialog(true);
   };
 
@@ -146,9 +151,10 @@ const VehiclePage: React.FC = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa phương tiện này?')) {
       try {
         await vehicleService.deleteVehicle(Number(id));
+        setSnackbar({ open: true, message: 'Xóa phương tiện thành công', severity: 'success' });
         loadVehicles();
       } catch (error) {
-        console.error('Error deleting vehicle:', error);
+        setSnackbar({ open: true, message: 'Lỗi xóa phương tiện', severity: 'error' });
       }
     }
   };
@@ -156,130 +162,141 @@ const VehiclePage: React.FC = () => {
   const handleToggleStatus = async (id: string) => {
     try {
       await vehicleService.toggleVehicleStatus(Number(id));
+      setSnackbar({ open: true, message: 'Cập nhật trạng thái thành công', severity: 'success' });
       loadVehicles();
     } catch (error) {
-      console.error('Error toggling vehicle status:', error);
+      setSnackbar({ open: true, message: 'Lỗi cập nhật trạng thái', severity: 'error' });
     }
   };
 
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formData.householdId || formData.householdId <= 0) errors.householdId = 'Nhập ID hộ gia đình';
+    if (!formData.licensePlate) errors.licensePlate = 'Nhập biển số xe';
+    if (!formData.type) errors.type = 'Chọn loại xe';
+    if (!formData.registeredDate) errors.registeredDate = 'Chọn ngày đăng ký';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) return;
     try {
       if (selectedVehicle) {
         await vehicleService.updateVehicle(selectedVehicle.id, formData);
+        setSnackbar({ open: true, message: 'Cập nhật phương tiện thành công', severity: 'success' });
       } else {
         await vehicleService.createVehicle(formData);
+        setSnackbar({ open: true, message: 'Thêm phương tiện thành công', severity: 'success' });
       }
       setOpenDialog(false);
       loadVehicles();
     } catch (error) {
-      console.error('Error saving vehicle:', error);
+      setSnackbar({ open: true, message: 'Lỗi lưu phương tiện', severity: 'error' });
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="font-bold text-gray-800">
+      <>
+        <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+          <Typography variant="h4" fontWeight={700}>
             Quản lý phương tiện
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAdd}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            Thêm phương tiện
-          </Button>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <SmartTable
-            columns={columns}
-            rows={vehicles}
-            rowCount={totalRows}
-            loading={loading}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            onSearch={setSearchValue}
-            searchValue={searchValue}
-            onAdd={handleAdd}
-            addLabel="Thêm phương tiện"
-          />
-        </div>
-
-        <Dialog 
-          open={openDialog} 
+        </Box>
+        <Box sx={{ bgcolor: 'white', borderRadius: 2, boxShadow: 1, p: 2 }}>
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <SmartTable
+              columns={columns}
+              rows={vehicles}
+              rowCount={totalRows}
+              loading={loading}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              onSearch={setSearchValue}
+              searchValue={searchValue}
+              addLabel="Thêm phương tiện"
+              onAdd={handleAdd}
+            />
+          )}
+        </Box>
+        <Dialog
+          open={openDialog}
           onClose={() => setOpenDialog(false)}
-          maxWidth="sm"
+          maxWidth="xs"
           fullWidth
         >
-          <DialogTitle className="bg-gray-50 border-b">
-            <Typography variant="h6" className="font-semibold">
+          <DialogTitle>
+            <Typography variant="h6" fontWeight={600}>
               {selectedVehicle ? 'Chỉnh sửa phương tiện' : 'Thêm phương tiện mới'}
             </Typography>
           </DialogTitle>
-          <DialogContent className="pt-6">
-            <div className="space-y-4">
+          <DialogContent sx={{ pt: 2 }}>
+            <Box display="flex" flexDirection="column" gap={2}>
               <TextField
                 fullWidth
                 label="ID Hộ gia đình"
                 type="number"
                 value={formData.householdId}
-                onChange={(e) => setFormData({ ...formData, householdId: Number(e.target.value) })}
-                variant="outlined"
-                className="rounded-md"
+                onChange={e => setFormData({ ...formData, householdId: Number(e.target.value) })}
+                error={!!formErrors.householdId}
+                helperText={formErrors.householdId}
               />
               <TextField
                 fullWidth
                 label="Biển số xe"
                 value={formData.licensePlate}
-                onChange={(e) => setFormData({ ...formData, licensePlate: e.target.value })}
-                variant="outlined"
-                className="rounded-md"
+                onChange={e => setFormData({ ...formData, licensePlate: e.target.value })}
+                error={!!formErrors.licensePlate}
+                helperText={formErrors.licensePlate}
               />
               <TextField
                 fullWidth
                 select
                 label="Loại xe"
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as VehicleType })}
-                variant="outlined"
-                className="rounded-md"
+                onChange={e => setFormData({ ...formData, type: (e.target.value as string).toUpperCase() as VehicleType })}
+                error={!!formErrors.type}
+                helperText={formErrors.type}
               >
-                <MenuItem value={VehicleType.MOTORBIKE}>Xe máy</MenuItem>
-                <MenuItem value={VehicleType.CAR}>Ô tô</MenuItem>
+                <MenuItem value="MOTORBIKE">Xe máy</MenuItem>
+                <MenuItem value="CAR">Ô tô</MenuItem>
               </TextField>
               <TextField
                 fullWidth
                 label="Ngày đăng ký"
                 type="date"
                 value={formData.registeredDate || ''}
-                onChange={(e) => setFormData({ ...formData, registeredDate: e.target.value })}
+                onChange={e => setFormData({ ...formData, registeredDate: e.target.value })}
                 InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                className="rounded-md"
+                error={!!formErrors.registeredDate}
+                helperText={formErrors.registeredDate}
               />
-            </div>
+            </Box>
           </DialogContent>
-          <DialogActions className="bg-gray-50 border-t p-4">
-            <Button 
-              onClick={() => setOpenDialog(false)}
-              className="text-gray-600 hover:bg-gray-100"
-            >
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color="inherit">
               Hủy
             </Button>
-            <Button 
-              onClick={handleSubmit}
-              variant="contained"
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button onClick={handleSubmit} variant="contained">
               {selectedVehicle ? 'Cập nhật' : 'Thêm mới'}
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-    </div>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+    </>
   );
 };
 

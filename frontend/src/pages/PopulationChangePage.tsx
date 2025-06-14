@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Typography, Card, CardContent } from '@mui/material';
+import { Box, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Typography, Card, CardContent, DialogActions, Button } from '@mui/material';
 import PopulationChangeList from './PopulationChangeList';
 import { PopulationChangeRequest, PopulationChangeResponse } from '../types/populationChange';
 import { populationChangeService } from '../services/populationChange.service';
 import PopulationChangeForm from '../components/PopulationChangeForm';
 import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
 
 const PopulationChangePage: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -99,10 +100,96 @@ const PopulationChangePage: React.FC = () => {
               </CardContent>
               </Card>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{selected ? 'Chi tiết thay đổi nhân khẩu' : 'Tạo thay đổi nhân khẩu mới'}</DialogTitle>
-        <DialogContent>
+        <DialogTitle className="bg-gray-50 border-b">
+          <Typography variant="h6" className="font-semibold">
+            {selected ? 'Chi tiết thay đổi nhân khẩu' : 'Tạo thay đổi nhân khẩu mới'}
+          </Typography>
+        </DialogTitle>
+        <DialogContent className="pt-6">
           {selected ? (
-            <pre>{JSON.stringify(selected, null, 2)}</pre>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Typography variant="subtitle2" color="textSecondary">Loại thay đổi</Typography>
+                  <Typography variant="body1" className="font-medium">
+                    {selected.changeType === 'IN' ? 'Nhập khẩu' : 'Xuất khẩu'}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography variant="subtitle2" color="textSecondary">Ngày bắt đầu</Typography>
+                  <Typography variant="body1" className="font-medium">
+                    {format(new Date(selected.startDate), 'dd/MM/yyyy')}
+                  </Typography>
+                </div>
+                {selected.endDate && (
+                  <div>
+                    <Typography variant="subtitle2" color="textSecondary">Ngày kết thúc</Typography>
+                    <Typography variant="body1" className="font-medium">
+                      {format(new Date(selected.endDate), 'dd/MM/yyyy')}
+                    </Typography>
+                  </div>
+                )}
+                <div>
+                  <Typography variant="subtitle2" color="textSecondary">Trạng thái</Typography>
+                  <Typography variant="body1" className="font-medium">
+                    {selected.endDate ? 'Đã hoàn thành' : 'Đang thực hiện'}
+                  </Typography>
+                </div>
+              </div>
+              
+              <div>
+                <Typography variant="subtitle2" color="textSecondary">Lý do</Typography>
+                <Typography variant="body1" className="font-medium">
+                  {selected.reason}
+                </Typography>
+              </div>
+
+              {selected.changeType === 'OUT' && (
+                <div>
+                  <Typography variant="subtitle2" color="textSecondary">Địa chỉ nơi đến</Typography>
+                  <Typography variant="body1" className="font-medium">
+                    {selected.destinationAddress}
+                  </Typography>
+                </div>
+              )}
+
+              {selected.changeType === 'IN' && (
+                <div>
+                  <Typography variant="subtitle2" color="textSecondary">Địa chỉ nơi đi</Typography>
+                  <Typography variant="body1" className="font-medium">
+                    {selected.sourceAddress}
+                  </Typography>
+                </div>
+              )}
+
+              <div>
+                <Typography variant="subtitle2" color="textSecondary">Người dân</Typography>
+                <Typography variant="body1" className="font-medium">
+                  {selected.residentName}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant="subtitle2" color="textSecondary">Hộ gia đình</Typography>
+                <Typography variant="body1" className="font-medium">
+                  {selected.householdCode}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant="subtitle2" color="textSecondary">Trạng thái phê duyệt</Typography>
+                <Typography variant="body1" className="font-medium">
+                  {selected.isApproved ? 'Đã phê duyệt' : 'Chưa phê duyệt'}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant="subtitle2" color="textSecondary">Ngày tạo</Typography>
+                <Typography variant="body1" className="font-medium">
+                  {format(new Date(selected.createdAt), 'dd/MM/yyyy HH:mm:ss')}
+                </Typography>
+              </div>
+            </div>
           ) : (
             <PopulationChangeForm
               initialValues={{
@@ -120,6 +207,14 @@ const PopulationChangePage: React.FC = () => {
             />
           )}
         </DialogContent>
+        <DialogActions className="bg-gray-50 border-t p-4">
+          <Button 
+            onClick={() => setOpenDialog(false)}
+            className="text-gray-600 hover:bg-gray-100"
+          >
+            Đóng
+          </Button>
+        </DialogActions>
       </Dialog>
       <Snackbar
         open={snackbar.open}

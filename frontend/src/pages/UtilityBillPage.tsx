@@ -14,8 +14,14 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Chip,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Paper,
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, EventAvailable as EventAvailableIcon } from '@mui/icons-material';
 import SmartTable from '../components/SmartTable';
 import { utilityBillService } from '../services/utilityBill.service';
 import { UtilityBill, UtilityBillRequest } from '../types/utilityBill';
@@ -41,6 +47,7 @@ const UtilityBillPage: React.FC = () => {
     type: UtilityType.ELECTRICITY,
     amount: 0,
   });
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -50,79 +57,66 @@ const UtilityBillPage: React.FC = () => {
       field: 'type', 
       headerName: 'Loại tiện ích', 
       width: 120,
-      valueGetter: (params: any) => {
-        switch (params?.row?.type) {
-          case UtilityType.ELECTRICITY:
-            return 'Điện';
-          case UtilityType.WATER:
-            return 'Nước';
-          case UtilityType.INTERNET:
-            return 'Internet';
+      renderCell: (params: any) => {
+        const type = (params?.row?.type || '').toUpperCase();
+        let color: 'primary' | 'secondary' | 'info' = 'primary';
+        let label = type;
+        switch (type) {
+          case 'ELECTRICITY':
+            color = 'primary';
+            label = 'ĐIỆN';
+            break;
+          case 'WATER':
+            color = 'info';
+            label = 'NƯỚC';
+            break;
+          case 'INTERNET':
+            color = 'secondary';
+            label = 'INTERNET';
+            break;
           default:
-            return params?.row?.type || '';
+            label = type;
         }
+        return <Chip label={label} color={color} size="small" />;
       }
     },
-    { 
-      field: 'amount', 
-      headerName: 'Số tiền', 
-      width: 120,
-      valueGetter: (params: any) => params?.row?.amount 
-        ? params.row.amount.toLocaleString('vi-VN') + ' VNĐ' 
-        : '0 VNĐ'
-    },
+    { field: 'amount', headerName: 'Số tiền', width: 120 },
     { 
       field: 'isPaid', 
       headerName: 'Trạng thái', 
       width: 120,
-      valueGetter: (params: any) => params?.row?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'
-    },
-    { 
-      field: 'paidDate', 
-      headerName: 'Ngày thanh toán', 
-      width: 150,
-      valueGetter: (params: any) => params?.row?.paidDate 
-        ? format(new Date(params.row.paidDate), 'dd/MM/yyyy') 
-        : ''
-    },
-    { field: 'paidBy', headerName: 'Người thanh toán', width: 150 },
-    { field: 'createdBy', headerName: 'Người tạo', width: 150 },
-    { 
-      field: 'createdAt', 
-      headerName: 'Ngày tạo', 
-      width: 180,
-      valueGetter: (params: any) => params?.row?.createdAt 
-        ? format(new Date(params.row.createdAt), 'dd/MM/yyyy HH:mm:ss') 
-        : ''
+      renderCell: (params: any) => (
+        <Chip 
+          label={params.row.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'} 
+          color={params.row.isPaid ? 'success' : 'default'} 
+          size="small" 
+        />
+      )
     },
     {
       field: 'actions',
       headerName: 'Thao tác',
-      width: 250,
+      width: 280,
       renderCell: (params: any) => (
-        <div className="flex gap-2">
-          <IconButton 
-            className="text-blue-600 hover:bg-blue-100" 
-            onClick={() => handleEdit(params.row)}
-          >
-            <EditIcon />
+        <Box display="flex" gap={1}>
+          <IconButton color="primary" onClick={() => handleEdit(params.row)} size="small">
+            <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton 
-            className="text-red-600 hover:bg-red-100" 
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <DeleteIcon />
+          <IconButton color="error" onClick={() => handleDelete(params.row.id)} size="small">
+            <DeleteIcon fontSize="small" />
           </IconButton>
           {!params.row.isPaid && (
             <Button
               size="small"
-              className="bg-green-100 text-green-700 hover:bg-green-200"
+              variant="outlined"
+              color="success"
+              startIcon={<EventAvailableIcon />}
               onClick={() => handleMarkAsPaid(params.row.id)}
             >
-              Đã thanh toán
+              Thanh toán
             </Button>
           )}
-        </div>
+        </Box>
       ),
     },
   ];
@@ -132,7 +126,7 @@ const UtilityBillPage: React.FC = () => {
       const response = await householdService.getHouseholds();
       setHouseholds(response.content);
     } catch (error) {
-      console.error('Error loading households:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải hộ gia đình', severity: 'error' });
     }
   };
 
@@ -155,7 +149,7 @@ const UtilityBillPage: React.FC = () => {
       setBills(response.content);
       setTotalRows(response.totalElements);
     } catch (error) {
-      console.error('Error loading bills:', error);
+      setSnackbar({ open: true, message: 'Lỗi tải hóa đơn', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -170,13 +164,9 @@ const UtilityBillPage: React.FC = () => {
   }, [selectedHouseholdId, paginationModel]);
 
   const handleAdd = () => {
-    if (!selectedHouseholdId) {
-      alert('Vui lòng chọn hộ gia đình trước khi thêm hóa đơn');
-      return;
-    }
     setSelectedBill(null);
     setFormData({
-      householdId: selectedHouseholdId,
+      householdId: selectedHouseholdId || 0,
       monthYear: format(new Date(), 'yyyy-MM'),
       type: UtilityType.ELECTRICITY,
       amount: 0,
@@ -199,9 +189,10 @@ const UtilityBillPage: React.FC = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa hóa đơn này?')) {
       try {
         await utilityBillService.deleteUtilityBill(id);
+        setSnackbar({ open: true, message: 'Xóa hóa đơn thành công', severity: 'success' });
         loadBills();
       } catch (error) {
-        console.error('Error deleting bill:', error);
+        setSnackbar({ open: true, message: 'Lỗi xóa hóa đơn', severity: 'error' });
       }
     }
   };
@@ -209,93 +200,107 @@ const UtilityBillPage: React.FC = () => {
   const handleMarkAsPaid = async (id: number) => {
     try {
       await utilityBillService.markAsPaid(id);
+      setSnackbar({ open: true, message: 'Đã đánh dấu thanh toán', severity: 'success' });
       loadBills();
     } catch (error) {
-      console.error('Error marking bill as paid:', error);
+      setSnackbar({ open: true, message: 'Lỗi đánh dấu thanh toán', severity: 'error' });
     }
   };
 
+  // Convert FE enum (lowercase) to BE enum (uppercase)
+  function toBackendUtilityType(type: UtilityType | string): string {
+    switch ((type || '').toLowerCase()) {
+      case 'electricity': return 'ELECTRICITY';
+      case 'water': return 'WATER';
+      case 'internet': return 'INTERNET';
+      default: return (type || '').toUpperCase();
+    }
+  }
+
   const handleSubmit = async () => {
     try {
+      const submitData = { ...formData, type: toBackendUtilityType(formData.type) as any };
       if (selectedBill) {
-        await utilityBillService.updateUtilityBill(selectedBill.id, formData);
+        await utilityBillService.updateUtilityBill(selectedBill.id, submitData);
+        setSnackbar({ open: true, message: 'Cập nhật hóa đơn thành công', severity: 'success' });
       } else {
-        await utilityBillService.createUtilityBill(formData);
+        await utilityBillService.createUtilityBill(submitData);
+        setSnackbar({ open: true, message: 'Thêm hóa đơn thành công', severity: 'success' });
       }
       setOpenDialog(false);
       loadBills();
     } catch (error) {
-      console.error('Error saving bill:', error);
+      setSnackbar({ open: true, message: 'Lỗi lưu hóa đơn', severity: 'error' });
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="font-bold text-gray-800">
-            Quản lý hóa đơn tiện ích
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAdd}
-            className="bg-blue-600 hover:bg-blue-700"
-            disabled={!selectedHouseholdId}
-          >
-            Thêm hóa đơn tiện ích
-          </Button>
-        </div>
-
-        <div className="bg-white rounded-lg
-
- shadow-md p-6 mb-6">
-          <div className="mb-6">
-            <FormControl fullWidth className="max-w-xs">
-              <InputLabel>Chọn hộ gia đình</InputLabel>
-              <Select
-                value={selectedHouseholdId}
-                label="Chọn hộ gia đình"
-                onChange={(e) => setSelectedHouseholdId(e.target.value as number)}
-                className="rounded-md"
+    <Box sx={{ p: 3, bgcolor: '#f5f6fa', minHeight: '100vh' }}>
+      <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+        <Paper sx={{ p: 2, borderRadius: 2, width: '100%' }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+            <Typography variant="h4" fontWeight={700}>
+              Quản lý hóa đơn tiện ích
+            </Typography>
+            <Box>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleAdd}
+                sx={{ fontWeight: 600 }}
               >
-                <MenuItem value="">
-                  <em>Tất cả</em>
-                </MenuItem>
-                {households.map((household) => (
-                  <MenuItem key={household.id} value={household.id}>
-                    {household.householdCode} - {household.ownerName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
+                Thêm hóa đơn tiện ích
+              </Button>
+            </Box>
+          </Box>
 
-          <SmartTable
-            columns={columns}
-            rows={bills}
-            rowCount={totalRows}
-            loading={loading}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            onSearch={setSearchValue}
-            searchValue={searchValue}
-          />
-        </div>
+
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <SmartTable
+              columns={columns}
+              rows={bills}
+              rowCount={totalRows}
+              loading={loading}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              onSearch={setSearchValue}
+              searchValue={searchValue}
+            />
+          )}
+        </Paper>
 
         <Dialog 
           open={openDialog} 
           onClose={() => setOpenDialog(false)}
-          maxWidth="sm"
+          maxWidth="xs"
           fullWidth
         >
-          <DialogTitle className="bg-gray-50 border-b">
-            <Typography variant="h6" className="font-semibold">
+          <DialogTitle>
+            <Typography variant="h6" fontWeight={600}>
               {selectedBill ? 'Chỉnh sửa hóa đơn tiện ích' : 'Thêm hóa đơn tiện ích mới'}
             </Typography>
           </DialogTitle>
-          <DialogContent className="pt-6">
-            <div className="space-y-4">
+          <DialogContent sx={{ pt: 2 }}>
+            <Box display="flex" flexDirection="column" gap={2}>
+              <FormControl fullWidth>
+                <InputLabel>Hộ gia đình</InputLabel>
+                <Select
+                  value={formData.householdId}
+                  label="Hộ gia đình"
+                  onChange={e => setFormData({ ...formData, householdId: e.target.value as number })}
+                >
+                  <MenuItem value={0} disabled><em>Chọn hộ gia đình</em></MenuItem>
+                  {households.map((household) => (
+                    <MenuItem key={household.id} value={household.id}>
+                      {household.householdCode} - {household.ownerName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 label="Tháng/Năm"
@@ -303,51 +308,50 @@ const UtilityBillPage: React.FC = () => {
                 value={formData.monthYear}
                 onChange={(e) => setFormData({ ...formData, monthYear: e.target.value })}
                 InputLabelProps={{ shrink: true }}
-                variant="outlined"
-                className="rounded-md"
               />
-              <TextField
-                fullWidth
-                select
-                label="Loại tiện ích"
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as UtilityType })}
-                variant="outlined"
-                className="rounded-md"
-              >
-                <MenuItem value={UtilityType.ELECTRICITY}>Điện</MenuItem>
-                <MenuItem value={UtilityType.WATER}>Nước</MenuItem>
-                <MenuItem value={UtilityType.INTERNET}>Internet</MenuItem>
-              </TextField>
+              <FormControl fullWidth>
+                <InputLabel>Loại tiện ích</InputLabel>
+                <Select
+                  value={formData.type}
+                  label="Loại tiện ích"
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value as UtilityType })}
+                >
+                  <MenuItem value={UtilityType.ELECTRICITY}>Điện</MenuItem>
+                  <MenuItem value={UtilityType.WATER}>Nước</MenuItem>
+                  <MenuItem value={UtilityType.INTERNET}>Internet</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 label="Số tiền (VNĐ)"
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                variant="outlined"
-                className="rounded-md"
               />
-            </div>
+            </Box>
           </DialogContent>
-          <DialogActions className="bg-gray-50 border-t p-4">
-            <Button 
-              onClick={() => setOpenDialog(false)}
-              className="text-gray-600 hover:bg-gray-100"
-            >
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)} color="inherit">
               Hủy
             </Button>
-            <Button 
-              onClick={handleSubmit}
-              variant="contained"
-              className="bg-blue-600 hover:bg-blue-700"
-            >
+            <Button onClick={handleSubmit} variant="contained">
               {selectedBill ? 'Cập nhật' : 'Thêm mới'}
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-    </div>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Box>
+    </Box>
   );
 };
 

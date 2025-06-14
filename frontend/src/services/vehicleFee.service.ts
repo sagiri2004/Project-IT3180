@@ -81,5 +81,15 @@ export const vehicleFeeService = {
   markAsPaid: async (id: number): Promise<VehicleFeeResponse> => {
     const response = await api.patch<ApiResponse<VehicleFeeResponse>>(`/vehicle-fees/${id}/mark-as-paid`);
     return response.data.data;
+  },
+
+  createDayTicket: async (data: VehicleFeeRequest): Promise<VehicleFeeResponse> => {
+    const response = await api.post<ApiResponse<VehicleFeeResponse>>('/vehicle-fees', data);
+    return response.data.data;
+  },
+
+  renewMonthlyTicket: async (id: number): Promise<VehicleFeeResponse> => {
+    const response = await api.post<ApiResponse<VehicleFeeResponse>>(`/vehicle-fees/${id}/renew`);
+    return response.data.data;
   }
 }; 

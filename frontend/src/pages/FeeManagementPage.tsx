@@ -27,7 +27,7 @@ const FeeManagementPage: React.FC = () => {
   const [feeCollectionsTotal, setFeeCollectionsTotal] = useState(0);
 
   useEffect(() => {
-    loadData();
+    loadFeeTypes();
   }, [feeTypePage, feeTypePageSize]);
 
   useEffect(() => {
@@ -36,20 +36,15 @@ const FeeManagementPage: React.FC = () => {
     }
   }, [feeCollectionPage, feeCollectionPageSize, tab]);
 
-  const loadData = async () => {
+  const loadFeeTypes = async () => {
     setLoading(true);
     try {
       const res = await feeTypeService.getAll(feeTypePage, feeTypePageSize);
       setFeeTypes(res.data);
       setFeeTypeRowCount(res.total);
-      const collections = await feeCollectionService.getAll(feeCollectionPage, feeCollectionPageSize);
-      if (Array.isArray(collections)) {
-        setFeeCollections(collections);
-      } else {
-        setFeeCollections(collections.data);
-      }
     } catch (error) {
-      console.error('Error loading data:', error);
+      setFeeTypes([]);
+      setFeeTypeRowCount(0);
     } finally {
       setLoading(false);
     }
@@ -59,15 +54,11 @@ const FeeManagementPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await feeCollectionService.getAll(feeCollectionPage, feeCollectionPageSize);
-      if (Array.isArray(res)) {
-        setFeeCollections(res);
-        setFeeCollectionsTotal(res.length);
-      } else {
-        setFeeCollections(res.data);
-        setFeeCollectionsTotal(res.total);
-      }
+      setFeeCollections(res.data);
+      setFeeCollectionsTotal(res.total);
     } catch (error) {
-      console.error('Error loading fee collections:', error);
+      setFeeCollections([]);
+      setFeeCollectionsTotal(0);
     } finally {
       setLoading(false);
     }
@@ -91,20 +82,9 @@ const FeeManagementPage: React.FC = () => {
 
   const handleAddFeeCollection = async (data: any) => {
     try {
-      const newCollection = {
-        ...data,
-        id: feeCollections.length + 1,
-        householdCode: 'HS00' + data.householdId,
-        apartmentNumber: 'A' + (100 + data.householdId),
-        feeTypeName: feeTypes.find(f => f.id === data.feeTypeId)?.name || '',
-        yearMonth: data.dueDate?.slice(0, 7) || '',
-        isPaid: false,
-        createdBy: 'admin',
-        createdAt: new Date().toISOString(),
-      };
       await feeCollectionService.create(data);
-      setFeeCollections(prev => [...prev, newCollection]);
       setOpenFeeCollectionDialog(false);
+      loadFeeCollections();
     } catch (error) {
       console.error('Error creating fee collection:', error);
     }
@@ -124,7 +104,7 @@ const FeeManagementPage: React.FC = () => {
   const handleEditFeeCollection = async (newRow: FeeCollection, oldRow: FeeCollection) => {
     try {
       await feeCollectionService.update(newRow);
-      setFeeCollections(prev => prev.map(row => row.id === newRow.id ? newRow : row));
+      loadFeeCollections();
       return newRow;
     } catch (error) {
       console.error('Error updating fee collection:', error);
@@ -235,44 +215,18 @@ const FeeManagementPage: React.FC = () => {
                 type: 'boolean', 
                 valueFormatter: (params: any) => params?.value ? 'Có' : 'Không' 
               },
-              { 
-                field: 'startDate', 
-                headerName: 'Ngày bắt đầu', 
-                width: 120, 
-                valueFormatter: (params: any) => formatDate(params?.value) 
-              },
-              { 
-                field: 'endDate', 
-                headerName: 'Ngày kết thúc', 
-                width: 120, 
-                valueFormatter: (params: any) => formatDate(params?.value) 
-              },
-              { 
-                field: 'status', 
-                headerName: 'Trạng thái', 
-                width: 120, 
-                valueGetter: (params: any) => {
-                  if (!params?.row) return '-';
-                  return getStatus(params.row.startDate, params.row.endDate);
-                }
-              },
-              { 
-                field: 'progress', 
-                headerName: 'Tiến độ', 
-                width: 160, 
-                renderCell: (params: any) => (
-                  <Box width="100%">
-                    <LinearProgress variant="determinate" value={getProgress(params.row.id)} sx={{ height: 8, borderRadius: 5 }} />
-                    <Typography variant="caption">{getProgress(params.row.id)}%</Typography>
-                  </Box>
-                ) 
-              },
               { field: 'createdBy', headerName: 'Người tạo', width: 120 },
               { 
                 field: 'createdAt', 
                 headerName: 'Ngày tạo', 
                 width: 160,
-                valueFormatter: (params: any) => formatDateTime(params?.value)
+                renderCell: (params: any) => {
+                  const value = params.value;
+                  if (!value) return '-';
+                  const d = new Date(value);
+                  if (isNaN(d.getTime())) return '-';
+                  return d.toLocaleString('vi-VN');
+                }
               },
               {
                 field: 'actions',
@@ -325,7 +279,11 @@ const FeeManagementPage: React.FC = () => {
                   width: 150, 
                   editable: true, 
                   type: 'number',
-                  valueFormatter: (params: any) => params?.value?.toLocaleString('vi-VN') || '0'
+                  renderCell: (params: any) => {
+                    const value = params.value;
+                    if (value == null) return '0';
+                    return value.toLocaleString('vi-VN');
+                  }
                 },
                 { 
                   field: 'isPaid', 
@@ -340,7 +298,13 @@ const FeeManagementPage: React.FC = () => {
                   headerName: 'Ngày thu', 
                   width: 120, 
                   editable: true, 
-                  valueFormatter: (params: any) => params?.value ? formatDate(params.value) : '' 
+                  renderCell: (params: any) => {
+                    const value = params.value;
+                    if (!value) return '';
+                    const d = new Date(value);
+                    if (isNaN(d.getTime())) return '';
+                    return d.toLocaleDateString('vi-VN');
+                  }
                 },
                 { field: 'paidBy', headerName: 'Người nộp', width: 120, editable: true },
                 { field: 'collectedBy', headerName: 'Người thu', width: 120, editable: true },
@@ -349,7 +313,13 @@ const FeeManagementPage: React.FC = () => {
                   field: 'createdAt', 
                   headerName: 'Ngày tạo', 
                   width: 160,
-                  valueFormatter: (params: any) => formatDateTime(params?.value)
+                  renderCell: (params: any) => {
+                    const value = params.value;
+                    if (!value) return '-';
+                    const d = new Date(value);
+                    if (isNaN(d.getTime())) return '-';
+                    return d.toLocaleString('vi-VN');
+                  }
                 },
               ]}
               rows={feeCollections}

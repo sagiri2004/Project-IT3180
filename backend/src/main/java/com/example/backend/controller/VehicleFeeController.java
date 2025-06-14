@@ -95,4 +95,16 @@ public class VehicleFeeController {
         VehicleFeeResponse response = vehicleFeeService.markAsPaid(id);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @PostMapping("/day-ticket")
+    public ResponseEntity<ApiResponse<VehicleFeeResponse>> createDayTicket(@Valid @RequestBody VehicleFeeRequest request) {
+        VehicleFeeResponse response = vehicleFeeService.createDayTicket(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/{id}/renew")
+    public ResponseEntity<ApiResponse<VehicleFeeResponse>> renewMonthlyTicket(@PathVariable Integer id) {
+        VehicleFeeResponse response = vehicleFeeService.renewMonthlyTicket(id);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 } 
