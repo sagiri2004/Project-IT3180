@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.example.backend.model.enums.TicketType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -43,4 +44,12 @@ public class VehicleFee {
 
     @CreationTimestamp
     LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    TicketType ticketType;
+
+    LocalDate validFrom;
+    LocalDate validTo;
+    LocalDate day;
 } 

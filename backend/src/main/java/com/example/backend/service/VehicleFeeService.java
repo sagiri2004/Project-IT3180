@@ -14,4 +14,6 @@ public interface VehicleFeeService {
     VehicleFeeResponse updateVehicleFee(Integer id, VehicleFeeRequest request);
     void deleteVehicleFee(Integer id);
     VehicleFeeResponse markAsPaid(Integer id);
+    VehicleFeeResponse createDayTicket(VehicleFeeRequest request);
+    VehicleFeeResponse renewMonthlyTicket(Integer id);
 } 

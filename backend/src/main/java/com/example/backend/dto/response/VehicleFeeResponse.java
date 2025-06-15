@@ -19,4 +19,8 @@ public class VehicleFeeResponse {
     private String collectedBy;
     private String createdBy;
     private LocalDateTime createdAt;
+    private String ticketType;
+    private String validFrom;
+    private String validTo;
+    private String day;
 } 

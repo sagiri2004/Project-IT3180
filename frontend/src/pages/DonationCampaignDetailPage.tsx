@@ -1,50 +1,50 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Box, Card, Typography, Stack, Chip, Divider, Button, Paper, Avatar, Grid } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BarChart, PieChart } from '@mui/x-charts';
 import SmartTable from '../components/SmartTable';
 import { MonetizationOn, People, TrendingUp, Info } from '@mui/icons-material';
-
-// Mock data
-const mockDonations = [
-  { id: 1, householdCode: 'HS001', apartmentNumber: 'A101', amount: 1000000, donationDate: '2024-05-01', createdBy: 'admin', createdAt: '2024-05-01T10:00:00' },
-  { id: 2, householdCode: 'HS002', apartmentNumber: 'A102', amount: 2000000, donationDate: '2024-05-02', createdBy: 'admin', createdAt: '2024-05-02T11:00:00' },
-  { id: 3, householdCode: 'HS003', apartmentNumber: 'A103', amount: 1500000, donationDate: '2024-05-03', createdBy: 'admin', createdAt: '2024-05-03T12:00:00' },
-  { id: 4, householdCode: 'HS004', apartmentNumber: 'A104', amount: 500000, donationDate: '2024-05-04', createdBy: 'admin', createdAt: '2024-05-04T13:00:00' },
-  { id: 5, householdCode: 'HS005', apartmentNumber: 'A105', amount: 3000000, donationDate: '2024-05-05', createdBy: 'admin', createdAt: '2024-05-05T14:00:00' },
-  { id: 6, householdCode: 'HS002', apartmentNumber: 'A102', amount: 1000000, donationDate: '2024-05-06', createdBy: 'admin', createdAt: '2024-05-06T15:00:00' },
-];
-
-const mockCampaign = {
-  id: 1,
-  name: 'Chiến dịch ủng hộ miền Trung',
-  description: 'Quyên góp ủng hộ đồng bào miền Trung bị lũ lụt',
-  totalHouseholds: 120,
-  totalDonors: 5,
-  totalDonated: 9000000,
-  targetAmount: 20000000,
-  remainingAmount: 11000000,
-  isActive: true,
-  startDate: '2024-05-01',
-  endDate: '2024-06-01',
-  createdBy: 'admin',
-  createdAt: '2024-04-25T09:00:00',
-};
+import api from '../services/api';
 
 const DonationCampaignDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const campaign = mockCampaign;
-  const donations = mockDonations;
+
+  // State cho dữ liệu thực tế
+  const [campaign, setCampaign] = useState<any>(null);
+  const [donations, setDonations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Lấy chi tiết campaign
+        const campaignRes = await api.get(`/donation-campaigns/${id}`);
+        setCampaign(campaignRes.data.data);
+        // Lấy danh sách donations
+        const donationsRes = await api.get(`/donations/campaign/${id}`);
+        // Dữ liệu trả về là data.data (mảng donations)
+        setDonations(donationsRes.data.data || []);
+      } catch (error) {
+        setCampaign(null);
+        setDonations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchData();
+  }, [id]);
 
   // Tạo mảng màu cho các cột bar chart
   const barColors = ['#6366F1', '#F59E42', '#10B981', '#F43F5E', '#A21CAF', '#0284C7', '#FACC15', '#0EA5E9'];
 
   // Tính toán dữ liệu cho BarChart theo ngày
   const barData = useMemo(() => {
-    const grouped = {};
+    const grouped: Record<string, number> = {};
     donations.forEach((d) => {
-      const date = d.donationDate.slice(0, 10); // Lấy YYYY-MM-DD
+      const date = d.donationDate?.slice(0, 10); // Lấy YYYY-MM-DD
+      if (!date) return;
       grouped[date] = (grouped[date] || 0) + d.amount;
     });
     const sortedDates = Object.keys(grouped).sort();
@@ -53,10 +53,10 @@ const DonationCampaignDetailPage = () => {
   }, [donations]);
 
   // Dữ liệu cho PieChart
-  const pieData = [
+  const pieData = campaign ? [
     { id: 0, value: campaign.totalDonated, label: 'Đã quyên góp', color: '#6366F1' },
     { id: 1, value: campaign.remainingAmount, label: 'Còn thiếu', color: '#F59E42' },
-  ];
+  ] : [];
 
   // Tạo mảng màu cho từng cột bar chart
   const barSeriesColors = barData.values.map((_, idx) => barColors[idx % barColors.length]);
@@ -66,13 +66,14 @@ const DonationCampaignDetailPage = () => {
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'householdCode', headerName: 'Mã hộ', width: 120 },
     { field: 'apartmentNumber', headerName: 'Số căn hộ', width: 120 },
-    { field: 'amount', headerName: 'Số tiền (VNĐ)', width: 150, valueFormatter: (params) => params.value?.toLocaleString('vi-VN') },
+    { field: 'amount', headerName: 'Số tiền (VNĐ)', width: 150, valueFormatter: (params: any) => params.value?.toLocaleString('vi-VN') },
     { field: 'donationDate', headerName: 'Ngày đóng góp', width: 140 },
     { field: 'createdBy', headerName: 'Người tạo', width: 120 },
     { field: 'createdAt', headerName: 'Ngày tạo', width: 160 },
   ];
 
-  if (!campaign) return <Typography>Đang tải...</Typography>;
+  if (loading) return <Typography>Đang tải...</Typography>;
+  if (!campaign) return <Typography>Không tìm thấy chiến dịch.</Typography>;
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1400, mx: 'auto', bgcolor: 'background.default' }}>
@@ -89,11 +90,10 @@ const DonationCampaignDetailPage = () => {
       {/* Stat Cards */}
       <Grid {...({ container: true, spacing: 3 } as any)} sx={{ mb: 4 }}>
         {[
-          { icon: <People />, label: 'Tổng số hộ', value: campaign.totalHouseholds, bgcolor: 'success.main' },
           { 
             icon: <MonetizationOn />, 
             label: 'Đã quyên góp', 
-            value: `${campaign.totalDonated.toLocaleString('vi-VN')} VNĐ`, 
+            value: `${campaign.totalDonated?.toLocaleString('vi-VN') || 0} VNĐ`, 
             bgcolor: 'success.main',
             subText: '+20.1% so với tháng trước',
             subColor: 'success.main'
@@ -101,9 +101,8 @@ const DonationCampaignDetailPage = () => {
           { 
             icon: <TrendingUp />, 
             label: 'Số hộ đã đóng', 
-            value: `${campaign.totalDonors} / ${campaign.totalHouseholds}`, 
+            value: `${campaign.totalDonors}`, 
             bgcolor: 'success.main',
-            subText: '+180 hộ mới',
             subColor: 'success.main'
           },
           { 
@@ -181,9 +180,9 @@ const DonationCampaignDetailPage = () => {
           <Typography><strong>Trạng thái:</strong> {campaign.isActive ? 'Đang diễn ra' : 'Kết thúc'}</Typography>
           <Typography><strong>Ngày bắt đầu:</strong> {campaign.startDate}</Typography>
           <Typography><strong>Ngày kết thúc:</strong> {campaign.endDate}</Typography>
-          <Typography><strong>Mục tiêu:</strong> {campaign.targetAmount.toLocaleString('vi-VN')} VNĐ</Typography>
-          <Typography><strong>Đã quyên góp:</strong> {campaign.totalDonated.toLocaleString('vi-VN')} VNĐ</Typography>
-          <Typography><strong>Còn thiếu:</strong> {campaign.remainingAmount.toLocaleString('vi-VN')} VNĐ</Typography>
+          <Typography><strong>Mục tiêu:</strong> {campaign.targetAmount?.toLocaleString('vi-VN') || 0} VNĐ</Typography>
+          <Typography><strong>Đã quyên góp:</strong> {campaign.totalDonated?.toLocaleString('vi-VN') || 0} VNĐ</Typography>
+          <Typography><strong>Còn thiếu:</strong> {campaign.remainingAmount?.toLocaleString('vi-VN') || 0} VNĐ</Typography>
           <Typography><strong>Người tạo:</strong> {campaign.createdBy}</Typography>
           <Typography><strong>Ngày tạo:</strong> {campaign.createdAt}</Typography>
         </Stack>
@@ -199,7 +198,7 @@ const DonationCampaignDetailPage = () => {
             columns={columns}
             rows={donations}
             rowCount={donations.length}
-            loading={false}
+            loading={loading}
             paginationModel={{ page: 0, pageSize: 10 }}
             onPaginationModelChange={() => {}}
             onSearch={() => {}}

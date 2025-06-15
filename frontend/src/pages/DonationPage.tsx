@@ -106,20 +106,18 @@ const DonationPage: React.FC = () => {
       editable: true,
       valueFormatter: (params: any) => params.value?.toLocaleString('vi-VN') || '0',
     },
-    {
-      field: 'donationDate',
-      headerName: 'Ngày đóng góp',
-      width: 120,
-      type: 'date' as const,
-      editable: true,
-      valueFormatter: (params: any) => formatDate(params.value),
-    },
     { field: 'createdBy', headerName: 'Người tạo', width: 120 },
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
       width: 160,
-      valueFormatter: (params: any) => formatDateTime(params.value),
+      renderCell: (params: any) => {
+        const date = params.value;
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return date;
+        return format(d, 'dd/MM/yyyy HH:mm');
+      }
     },
     {
       field: 'actions',

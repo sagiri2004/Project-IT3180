@@ -21,6 +21,7 @@ import UserManagementPage from './pages/UserManagementPage';
 import VehiclePage from './pages/VehiclePage';
 import VehicleFeePage from './pages/VehicleFeePage';
 import UtilityBillPage from './pages/UtilityBillPage';
+import VehicleFeeConfigPage from './pages/VehicleFeeConfigPage';
 import theme, { getDesignTokens } from './theme';
 import HistoryList from './components/HistoryList';
 
@@ -76,6 +77,7 @@ const App: React.FC = () => {
               <Route path="vehicles" element={<VehiclePage />} />
               <Route path="vehicle-fees" element={<VehicleFeePage />} />
               <Route path="utility-bills" element={<UtilityBillPage />} />
+              <Route path="vehicle-fee-configs" element={<VehicleFeeConfigPage />} />
             </Route>
 
             {/* Catch all route */}
